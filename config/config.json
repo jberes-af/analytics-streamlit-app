@@ -1,0 +1,20 @@
+{
+  "file_paths_local": {
+    "placeholder_raw_csv_path": "data/raw",
+    "placeholder_out_md": "data/reports"
+  },
+  "google_sheets": {
+    "tables": {
+      "time_horizon": {
+        "file_name": "model_config",
+        "worksheet_name": "time",
+        "worksheet_range": "A1:B"
+      },
+      "quantities": {
+        "file_name": "model_config",
+        "worksheet_name": "volume",
+        "worksheet_range": "B2:G"
+      }
+    }
+  }
+}
