@@ -1,4 +1,4 @@
-# /src/application/firebase/login_user.py
+# /src/application/firebase_auth/login_user.py
 
 from src.application.auth.dto import LoginRequestDTO, AuthenticatedUserDTO
 from src.application.auth.ports import AuthProvider

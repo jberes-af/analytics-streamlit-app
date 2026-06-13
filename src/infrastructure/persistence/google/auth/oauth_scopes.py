@@ -1,4 +1,4 @@
-# infrastructure/google/firebase/oauth_scopes.py
+# infrastructure/google/firebase_auth/oauth_scopes.py
 
 from typing import Literal, Sequence
 

@@ -1,12 +1,23 @@
 # /src/infrastructure/config/settings_model.py
 
 from dataclasses import dataclass
+from enum import StrEnum
 from pathlib import Path
-from typing import Literal, Mapping, Sequence
-
+from typing import Any, Literal, Mapping, Sequence
 
 GoogleAccessMode = Literal["read", "write"]
 DriveAccessMode = Literal["none", "read", "write", "all"]
+
+
+class AppMode(StrEnum):
+    DEVELOPMENT = "development"
+    PRODUCTION = "production"
+
+
+@dataclass(frozen=True)
+class FirebaseAdminSettings:
+    database_url: str
+    service_account_info: dict[str, Any]
 
 
 @dataclass(frozen=True)
@@ -33,6 +44,9 @@ class FirebaseWebSettings:
 
 @dataclass(frozen=True)
 class Settings:
+    app_mode: AppMode
+    dev_user_id: str | None
+
     project_root: Path
     config_path: Path
 
@@ -48,3 +62,4 @@ class Settings:
     # google_places_api_key: str
 
     firebase_web: FirebaseWebSettings
+    firebase_admin: FirebaseAdminSettings

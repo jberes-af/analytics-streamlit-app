@@ -1,4 +1,4 @@
-# /src/application/firebase/dto.py
+# /src/application/firebase_auth/dto.py
 
 from dataclasses import dataclass
 

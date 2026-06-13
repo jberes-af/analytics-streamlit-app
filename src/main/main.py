@@ -11,7 +11,7 @@ import logging
 from sys import stderr
 import traceback
 
-from src.main.composition_root import app_container
+from src.main.composition_root import startup_app_container
 
 
 def configure_logging() -> None:
@@ -28,7 +28,7 @@ def main() -> int:
         # For this Streamlit app, main.py does not launch the UI.
         # It only verifies that the application can be composed.
         logging.info("App container built successfully")
-        logging.info("Config path: %s", app_container.settings.config_path)
+        logging.info("Config path: %s", startup_app_container.settings.config_path)
         return 0
 
     except ValueError as exc:

@@ -1,4 +1,4 @@
-# infrastructure/google/firebase/google_credentials_provider.py
+# infrastructure/google/firebase_auth/google_credentials_provider.py
 
 from dataclasses import dataclass
 from pathlib import Path

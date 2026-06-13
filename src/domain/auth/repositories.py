@@ -1,4 +1,4 @@
-# /src/domain/firebase/repositories.py
+# /src/domain/firebase_auth/repositories.py
 
 from typing import Protocol
 from src.application.auth.dto import AuthenticatedUserDTO
