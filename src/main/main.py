@@ -11,7 +11,7 @@ import logging
 from sys import stderr
 import traceback
 
-from src.main.composition_root import startup_app_container
+from src.main.composition_root_startup import startup_app_container
 
 
 def configure_logging() -> None:

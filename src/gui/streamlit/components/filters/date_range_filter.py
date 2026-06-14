@@ -6,13 +6,14 @@ import streamlit as st
 
 
 def render_date_range_filter(key_prefix: str) -> tuple[date, date]:
-    default_end_date = date.today()
+    default_end_date = date.today() - timedelta(days=1)
     default_start_date = default_end_date - timedelta(days=7)
 
     start_date = st.date_input(
         "Start Date",
         value=default_start_date,
         key=f"{key_prefix}_start_date",
+        format="MM-DD-YYYY",
     )
 
     st.caption(
@@ -23,6 +24,7 @@ def render_date_range_filter(key_prefix: str) -> tuple[date, date]:
         "End Date",
         value=default_end_date,
         key=f"{key_prefix}_end_date",
+        format="MM-DD-YYYY",
     )
 
     st.caption(

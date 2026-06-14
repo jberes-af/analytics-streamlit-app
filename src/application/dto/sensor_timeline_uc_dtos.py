@@ -24,14 +24,14 @@ class SensorLastSeenDTO:
 
 @dataclass(frozen=True)
 class SensorEventTimelineRequestDTO:
-    user_id: str
+    # user_id: str
+    sensor_ids: list[str]
     start_date: date
     end_date: date
 
 
 @dataclass(frozen=True)
 class SensorEventTimelineResultDTO:
-    user_id: str
     # sensor_ids: list[str]
     # sensor_profiles: list[SensorProfile]
     start_time: datetime

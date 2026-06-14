@@ -102,7 +102,7 @@ class SensorWeeklyActivityDTO:
 
 @dataclass
 class ActivityMetricsCalculatorResultDTO:
-    user_id: str
+    # user_id: str
     start_date: date
     end_date: date
     daily_activity: list[DailyActivityDTO]

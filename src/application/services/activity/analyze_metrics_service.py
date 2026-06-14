@@ -33,13 +33,13 @@ class ActivityMetricsService:
 
     def calculate_activity_metrics(
             self,
-            user_id: str,
+            # user_id: str,
             start_time: datetime,
             end_time: datetime,
             events: list[SensorEvent],
     ) -> ActivityMetricsCalculatorResultDTO:
         return self.calculator.calculate(
-            user_id=user_id,
+            # user_id=user_id,
             start_time=start_time,
             end_time=end_time,
             events=events,

@@ -81,7 +81,7 @@ class PandasActivityMetricsCalculator(ActivityMetricsCalculatorPort):
 
     def calculate(
             self,
-            user_id: str,
+            # user_id: str,
             start_time: datetime,
             end_time: datetime,
             events: list[SensorEvent],
@@ -90,7 +90,7 @@ class PandasActivityMetricsCalculator(ActivityMetricsCalculatorPort):
 
         if df.empty:
             return ActivityMetricsCalculatorResultDTO(
-                user_id=user_id,
+                # user_id=user_id,
                 start_date=start_time.date(),
                 end_date=end_time.date(),
                 daily_activity=[],
@@ -117,7 +117,7 @@ class PandasActivityMetricsCalculator(ActivityMetricsCalculatorPort):
         )
 
         return ActivityMetricsCalculatorResultDTO(
-            user_id=user_id,
+            # user_id=user_id,
             start_date=start_time.date(),
             end_date=end_time.date(),
             daily_activity=self.daily_calculator.calculate_date_time(df),

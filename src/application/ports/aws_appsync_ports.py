@@ -1,7 +1,8 @@
 # /src/application/ports/aws_appsync_ports.py
 
 from typing import Protocol
-from src.application.dto.sensor_timeline_uc_dtos import (
+
+from src.application.dto.sensor_connectivity_uc_dtos import (
     SensorLastSeenDTO,
 )
 

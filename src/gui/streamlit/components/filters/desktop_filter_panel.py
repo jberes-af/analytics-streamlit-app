@@ -2,13 +2,21 @@
 
 import streamlit as st
 
-from .date_range_filter import render_date_range_filter
-from .sensor_selector import render_sensor_selector
-from .models import AnalysisFilters
+from src.gui.streamlit.components.filters.date_range_filter import (
+    render_date_range_filter,
+)
+
+from src.gui.streamlit.components.filters.sensor_selector import (
+    render_sensor_selector,
+)
+
+from src.gui.streamlit.components.filters.models import (AnalysisFilters,
+                                                         )
 
 
 def render_desktop_filter_panel(
-    available_sensor_ids: list[str],
+        available_sensor_ids: list[str],
+        sensor_names: list[str],
 ) -> AnalysisFilters:
     with st.sidebar:
         st.title("Settings")
@@ -22,6 +30,9 @@ def render_desktop_filter_panel(
             available_sensor_ids=available_sensor_ids,
             key_prefix="desktop",
         )
+
+        description: str = "\n".join(sensor_names)
+        st.text(description)
 
         st.divider()
 

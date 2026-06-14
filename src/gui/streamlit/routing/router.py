@@ -17,6 +17,9 @@ from src.interface_adapters.controllers.startup_controller import (
     RunStartupUseCasesController,
 )
 
+from src.main.composition_root_startup import StartupAppContainer
+from src.main.composition_root_analysis import AnalysisAppContainer
+
 
 """
 DEFAULT_SECTION = "Overview"
@@ -56,7 +59,9 @@ def render_route(section_name: str, route_name: str) -> None:
 
 def render_router(
         startup_request: RunStartupUseCasesRequestDTO,
-        startup_controller: RunStartupUseCasesController,
+        startup_app: StartupAppContainer,
+        analysis_app: AnalysisAppContainer,
+
 ) -> None:
     """
     There are two left navigation panel options for desktop
@@ -71,6 +76,7 @@ def render_router(
     # --- OPTION #2: render only one page
     render_main_page(
         startup_request=startup_request,
-        startup_controller=startup_controller,
+        startup_app=startup_app,
+        analysis_app=analysis_app,
     )
 

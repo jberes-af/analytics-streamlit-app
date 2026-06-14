@@ -8,9 +8,9 @@ from src.application.dto.run_startup_use_cases_dtos import (
     RunStartupUseCasesResultDTO,
 )
 
-from src.application.dto.run_all_use_cases_dtos import (
-    RunAllUseCasesRequestDTO,
-    RunAllUseCasesResultDTO,
+from src.application.dto.run_analysis_use_cases_dtos import (
+    RunAnalysisUseCasesRequestDTO,
+    RunAnalysisUseCasesResultDTO,
 )
 
 from src.application.dto.sensor_by_user_uc_dtos import (
@@ -23,10 +23,12 @@ from src.application.dto.sensor_timeline_uc_dtos import (
     SensorEventTimelineResultDTO,
 )
 
+"""
 from src.application.dto.movement_uc_dtos import (
     MovementAnalysisRequestDTO,
     MovementAnalysisResultDTO,
 )
+"""
 
 from src.application.dto.activity_uc_dtos import (
     ActivityAnalysisRequestDTO,
@@ -54,12 +56,14 @@ class BuildSensorEventTimelineInteractor(Protocol):
         ...
 
 
+"""
 class AnalyzeMovementPatternsInteractor(Protocol):
     def execute(
             self,
             request: MovementAnalysisRequestDTO,
     ) -> MovementAnalysisResultDTO:
         ...
+"""
 
 
 class AnalyzeActivityLevelsInteractor(Protocol):
@@ -108,21 +112,19 @@ class RunStartupUseCasesInteractor(Protocol):
         return result
 
 
-class RunAllUseCasesInteractor(Protocol):
+class RunAnalysisUseCasesInteractor(Protocol):
     def __init__(
             self,
-            analyze_movements_use_case: AnalyzeMovementPatternsInteractor,
-            analyze_activity_use_case: AnalyzeActivityLevelsInteractor,
             build_sensor_event_timeline_use_case: BuildSensorEventTimelineInteractor,
+            analyze_activity_use_case: AnalyzeActivityLevelsInteractor,
     ) -> None:
-        self._analyze_movements_uc = analyze_movements_use_case
-        self._analyze_activity_uc = analyze_activity_use_case
         self._build_sensor_timeline_uc = build_sensor_event_timeline_use_case
+        self._analyze_activity_uc = analyze_activity_use_case
 
     def execute(
             self,
-            request: RunAllUseCasesRequestDTO,
-    ) -> RunAllUseCasesResultDTO:
+            request: RunAnalysisUseCasesRequestDTO,
+    ) -> RunAnalysisUseCasesResultDTO:
         build_sensor_timeline_result: SensorEventTimelineResultDTO = (
             self._build_sensor_timeline(request))
 
@@ -132,28 +134,20 @@ class RunAllUseCasesInteractor(Protocol):
                 build_sensor_timeline_result,
             ))
 
-        analyze_movements_result: MovementAnalysisResultDTO = (
-            self._analyze_movements(
-                request,
-                build_sensor_timeline_result,
-            ))
-
-        return RunAllUseCasesResultDTO(
-            run_all_request=request,
+        return RunAnalysisUseCasesResultDTO(
+            run_request=request,
             build_sensor_timeline_result=build_sensor_timeline_result,
-            analyze_movements_result=analyze_movements_result,
             analyze_activity_result=analyze_activity_result,
         )
 
     def _build_sensor_timeline(
             self,
-            request: RunAllUseCasesRequestDTO,
+            request: RunAnalysisUseCasesRequestDTO,
     ) -> SensorEventTimelineResultDTO:
-        # Result: user_id, start & end dates, sensor IDs, "collapsed" sensor events
         logger.info("Building sensor timeline use case...")
 
         request = SensorEventTimelineRequestDTO(
-            user_id=request.user_id,
+            sensor_ids=request.sensor_ids,
             start_date=request.start_date,
             end_date=request.end_date,
         )
@@ -166,16 +160,16 @@ class RunAllUseCasesInteractor(Protocol):
 
     def _analyze_activity(
             self,
-            request: RunAllUseCasesRequestDTO,
+            request: RunAnalysisUseCasesRequestDTO,
             sensor_events_timeline: SensorEventTimelineResultDTO,
     ) -> ActivityAnalysisResultDTO:
         logger.info("Analyzing activity use case...")
 
         request = ActivityAnalysisRequestDTO(
-            user_id=request.user_id,
             start_time=sensor_events_timeline.start_time,
             end_time=sensor_events_timeline.end_time,
-            # sensor_ids=tuple(sensor_events_timeline.sensor_ids),
+            rolling_window=request.rolling_window,
+            rolling_frequency=request.rolling_frequency,
             sensor_events=tuple(sensor_events_timeline.collapsed_events),
         )
 
@@ -183,27 +177,4 @@ class RunAllUseCasesInteractor(Protocol):
             self._analyze_activity_uc.execute(request))
 
         logger.info("... activity analysis complete.")
-        return result
-
-    def _analyze_movements(
-            self,
-            request: RunAllUseCasesRequestDTO,
-            sensor_events_timeline: SensorEventTimelineResultDTO,
-    ) -> MovementAnalysisResultDTO:
-        logger.info("Analyzing movement analysis use case...")
-
-        request = MovementAnalysisRequestDTO(
-            scenario_id=request.scenario_id,
-            user_reference=request.user_reference,
-            user_id=request.user_id,
-            # start_date=request.start_date,
-            # end_date=request.end_date,
-            # sensor_ids=tuple(sensor_events_timeline.sensor_ids),
-            sensor_events=tuple(sensor_events_timeline.collapsed_events),
-        )
-
-        result: MovementAnalysisResultDTO = (
-            self._analyze_movements_uc.execute(request))
-
-        logger.info("... movement analysis complete.")
         return result

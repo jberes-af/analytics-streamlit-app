@@ -27,10 +27,8 @@ class BuildSensorEventTimelineUseCase:
     def __init__(
             self,
             read_firebase_node_service: ReadFirebaseNodeService,
-            # read_app_sync_last_seen_service: SensorLastSeenPort,
     ) -> None:
         self._read_firebase_service = read_firebase_node_service
-        # self._read_last_seen_service = read_app_sync_last_seen_service
 
     def execute(
             self,
@@ -65,15 +63,6 @@ class BuildSensorEventTimelineUseCase:
             events_by_sensor_id=events_by_sensor_id,
         )
 
-        """
-        most_recent_events: list[MostRecentSensorEventDTO] = (
-            self._extract_most_recent_event_by_sensor_id(
-                sensor_ids=sensor_ids,
-                events=events,
-            )
-        )
-        """
-
         start_time: datetime
         end_time: datetime
         start_time, end_time = self._convert_date_to_datetime(
@@ -94,11 +83,9 @@ class BuildSensorEventTimelineUseCase:
             ))
 
         return SensorEventTimelineResultDTO(
-            user_id=request.user_id,
             start_time=start_time,
             end_time=end_time,
             collapsed_events=collapsed_events,
-            # most_recent_events=most_recent_events,
         )
 
     @staticmethod
@@ -126,39 +113,6 @@ class BuildSensorEventTimelineUseCase:
 
         return sorted(events, key=lambda event: event.activated_at)
 
-    """
-    @staticmethod
-    def _extract_most_recent_event_by_sensor_id(
-            sensor_ids: list[str],
-            events: list[SensorEvent],
-    ) -> list[MostRecentSensorEventDTO]:
-
-        id_to_event: dict[str, SensorEvent | None] = {
-            sensor_id: None
-            for sensor_id in sensor_ids
-        }
-
-        for event in events:
-            if event.sensor_id not in id_to_event:
-                continue
-
-            current_event = id_to_event[event.sensor_id]
-
-            if (
-                    current_event is None
-                    or event.activated_at > current_event.activated_at
-            ):
-                id_to_event[event.sensor_id] = event
-
-        return [
-            MostRecentSensorEventDTO(
-                sensor_id=sensor_id,
-                activated_at=event.activated_at if event else None,
-                # sensor_state=event.sensor_state if event else None,
-            )
-            for sensor_id, event in id_to_event.items()
-        ]
-    """
 
     @staticmethod
     def _collapse_consecutive_sensor_events(

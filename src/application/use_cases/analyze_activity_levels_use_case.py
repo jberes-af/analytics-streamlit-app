@@ -26,14 +26,14 @@ class AnalyzeActivityLevelsUseCase:
         events: list[SensorEvent] = list(request.sensor_events)
 
         result = self.activity_metrics_service.calculate_activity_metrics(
-            user_id=request.user_id,
+            # user_id=request.user_id,
             start_time=request.start_time,
             end_time=request.end_time,
             events=events,
         )
 
         return ActivityAnalysisResultDTO(
-            user_id=request.user_id,
+            # user_id=request.user_id,
             start_date=request.start_time,
             end_date=request.end_time,
             daily_activity=result.daily_activity,

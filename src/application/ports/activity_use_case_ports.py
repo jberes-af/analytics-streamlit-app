@@ -24,7 +24,7 @@ class SensorEventRepositoryPort(Protocol):
 class ActivityMetricsCalculatorPort(Protocol):
     def calculate(
             self,
-            user_id: str,
+            # user_id: str,
             start_time: datetime,
             end_time: datetime,
             events: list[SensorEvent],

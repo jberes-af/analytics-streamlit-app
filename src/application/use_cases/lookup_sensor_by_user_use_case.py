@@ -74,13 +74,43 @@ class LookupSensorByUserUseCase:
             for sensor_id, user_profile in raw_user_sensors.data.items()
         ]
 
-        print("*************")
-        print("answer")
-        print(sensor_profiles)
-        print("*************")
+        sensor_names: list[str] = self._formulate_sensor_names(
+            sensor_ids=sensor_ids,
+            sensor_profiles=sensor_profiles,
+        )
 
         return SensorByUserResultDTO(
             user_id=request.user_id,
             sensor_ids=sensor_ids,
             sensor_profiles=sensor_profiles,
+            sensor_names=sensor_names,
         )
+
+
+    @staticmethod
+    def _formulate_sensor_names(
+            sensor_ids: list[str],
+            sensor_profiles: list[SensorProfile],
+    ) -> list[str]:
+
+        id_to_profile: dict[str, SensorProfile] = {
+            profile.sensor_id: profile
+            for profile in sensor_profiles
+        }
+
+        names: list[str] = []
+
+        for sensor_id in sorted(sensor_ids):
+            profile: SensorProfile = id_to_profile.get(sensor_id)
+            if profile is None:
+                name: str = f"{sensor_id}: Profile Not Available"
+            else:
+                type: str = profile.sensor_type
+                location: str = profile.sensor_location
+                # name: str = f"{location} • {type.title()} • {sensor_id}"
+                name: str = f"{sensor_id}: {type.title()} • {location[:20]}"
+
+            names.append(name)
+
+        return names
+

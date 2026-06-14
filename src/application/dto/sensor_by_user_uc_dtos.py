@@ -15,3 +15,4 @@ class SensorByUserResultDTO:
     user_id: str
     sensor_ids: list[str]
     sensor_profiles: list[SensorProfile]
+    sensor_names: list[str]

@@ -22,16 +22,19 @@ from src.application.dto.activity_metric_dtos import (
 
 @dataclass(frozen=True)
 class ActivityAnalysisRequestDTO:
-    user_id: str
+    # user_id: str
     start_time: datetime
     end_time: datetime
     # sensor_ids: tuple[str, ...]
+    rolling_window: str
+    rolling_frequency: str
     sensor_events: tuple[SensorEvent, ...]
+
 
 
 @dataclass
 class ActivityAnalysisResultDTO:
-    user_id: str
+    # user_id: str
     start_date: date
     end_date: date
 
