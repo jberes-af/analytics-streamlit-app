@@ -92,7 +92,6 @@ from src.infrastructure.services.analysis.pandas.activity.sensor_time_period_sta
     SensorTimePeriodStatisticsCalculator,
 )
 
-
 from src.infrastructure.services.renderers.plotly.plotly_line_chart_renderer import (
     PlotlyLineChartRenderer,
 )
@@ -145,6 +144,10 @@ from src.interface_adapters.presenters.activity.weekly_activity_presenter import
 
 from src.interface_adapters.presenters.activity.activity_presenter_service import (
     ActivityPresenterService,
+)
+
+from src.interface_adapters.presenters.activity.sensor_statistics_presenter import (
+    SensorTimePeriodStatisticsPresenter,
 )
 
 from src.interface_adapters.presenters.charts.charts_presenter_service import (
@@ -231,6 +234,7 @@ def build_analysis_app_container(
     activity_presenter_service = ActivityPresenterService(
         activity_metrics_presenter=ActivityAnalysisMetricsPresenter(),
         weekly_activity_presenter=WeeklyActivityPresenter(),
+        sensor_activity_statistics_presenter=SensorTimePeriodStatisticsPresenter(),
     )
 
     # --- VIEWS
@@ -254,7 +258,6 @@ def build_analysis_app_container(
         scatter_line_chart_renderer=PlotlyScatterLineChartRenderer(),
         bar_chart_plotter=MatplotlibVerticalBarChartPlotter(),
         scatter_chart_plotter=MatplotlibScatterChartPlotter(),
-
 
         console_view_service=console_view_service,
 
