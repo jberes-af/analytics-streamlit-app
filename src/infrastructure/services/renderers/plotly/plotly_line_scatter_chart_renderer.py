@@ -72,24 +72,41 @@ class PlotlyScatterLineChartRenderer:
             xaxis_title=chart_vm.x_axis_label,
             yaxis_title=chart_vm.y_axis_label,
             height=self.height,
-            showlegend=True,
             margin={"l": 40, "r": 20, "t": 60, "b": 40},
         )
 
         fig.update_xaxes(showgrid=self.show_grid)
         fig.update_yaxes(showgrid=self.show_grid)
 
+        fig.update_layout(
+            showlegend=True,
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="center",
+                x=0.5,
+                font=dict(size=16),
+            ),
+        )
+
+        step = 7
+
         if chart_vm.x_tick_labels is not None and chart_vm.line_series:
             tick_values = [
-                point.x.isoformat() if hasattr(point.x, "isoformat") else point.x
+                point.x.isoformat()
+                if hasattr(point.x, "isoformat")
+                else point.x
                 for point in chart_vm.line_series[0].points
             ]
 
+            tick_labels = list(chart_vm.x_tick_labels)
+
             fig.update_xaxes(
                 tickmode="array",
-                tickvals=tick_values,
-                ticktext=list(chart_vm.x_tick_labels),
-                tickangle=45,
+                tickvals=tick_values[::step],
+                ticktext=tick_labels[::step],
+                tickangle=0,
             )
 
         return fig
