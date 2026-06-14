@@ -83,9 +83,15 @@ from src.infrastructure.services.analysis.pandas.activity.activity_distribution_
 from src.infrastructure.services.analysis.pandas.activity.sensor_activity_trend_calculator import (
     ActivityTrendCalculator,
 )
+
 from src.infrastructure.services.analysis.pandas.activity.weekly_activity_calculator import (
     WeeklyActivityCalculator,
 )
+
+from src.infrastructure.services.analysis.pandas.activity.sensor_time_period_statistics_calculator import (
+    SensorTimePeriodStatisticsCalculator,
+)
+
 
 from src.infrastructure.services.renderers.plotly.plotly_line_chart_renderer import (
     PlotlyLineChartRenderer,
@@ -298,6 +304,7 @@ def _build_analyze_activity_use_case() -> AnalyzeActivityLevelsInteractor:
     distribution_calculator = ActivityDistributionCalculator()
     activity_trend_calculator = ActivityTrendCalculator()
     weekly_calculator = WeeklyActivityCalculator()
+    time_period_statistics_calculator = SensorTimePeriodStatisticsCalculator()
 
     activity_calculator: ActivityMetricsCalculatorPort = (
         PandasActivityMetricsCalculator(
@@ -311,6 +318,7 @@ def _build_analyze_activity_use_case() -> AnalyzeActivityLevelsInteractor:
             distribution_calculator=distribution_calculator,
             activity_trend_calculator=activity_trend_calculator,
             weekly_activity_calculator=weekly_calculator,
+            time_period_statistics_calculator=time_period_statistics_calculator,
         )
     )
 
