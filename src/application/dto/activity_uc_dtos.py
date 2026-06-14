@@ -14,9 +14,10 @@ from src.application.dto.activity_metric_dtos import (
     RollingActivityDTO,
     CombinedSensorActivityDTO,
     SensorByIdByDateActivityDTO,
+    SensorAllByDateActivityDTO,
     ActivityTrendDTO,
     SensorWeeklyActivityDTO,
-
+    SensorTimePeriodStatisticsDTO,
 )
 
 
@@ -31,7 +32,6 @@ class ActivityAnalysisRequestDTO:
     sensor_events: tuple[SensorEvent, ...]
 
 
-
 @dataclass
 class ActivityAnalysisResultDTO:
     # user_id: str
@@ -40,7 +40,8 @@ class ActivityAnalysisResultDTO:
 
     daily_activity: list[DailyActivityDTO]
     combined_sensor_activity: list[CombinedSensorActivityDTO]
-    sensor_by_id_activity: list[SensorByIdByDateActivityDTO]
+    sensor_by_id_by_date_activity: list[SensorByIdByDateActivityDTO]
+    all_sensors_by_date_activity: list[SensorAllByDateActivityDTO]
     hourly_activity: list[HourlyActivityDTO]
     rolling_activity: list[RollingActivityDTO]
     peak_activity: list[PeakActivityDTO]
@@ -48,3 +49,4 @@ class ActivityAnalysisResultDTO:
     activity_distribution: ActivityDistributionDTO
     sensor_activity_trends: list[ActivityTrendDTO]
     weekly_sensor_activity: list[SensorWeeklyActivityDTO]
+    sensor_time_period_statistics: list[SensorTimePeriodStatisticsDTO]

@@ -19,6 +19,19 @@ def render_desktop_filter_panel(
         sensor_names: list[str],
 ) -> AnalysisFilters:
     with st.sidebar:
+
+        st.divider()
+
+        run_analysis = st.button(
+            "Run Analysis",
+            type="primary",
+            width="stretch",
+            # use_container_width=True,
+            key="desktop_run_analysis",
+        )
+
+        st.divider()
+
         st.title("Settings")
 
         st.subheader("Date Range")
@@ -34,14 +47,17 @@ def render_desktop_filter_panel(
         description: str = "\n".join(sensor_names)
         st.text(description)
 
+        """
         st.divider()
 
         run_analysis = st.button(
             "Run Analysis",
             type="primary",
-            use_container_width=True,
+            width="stretch",
+            # use_container_width=True,
             key="desktop_run_analysis",
         )
+        """
 
     return AnalysisFilters(
         start_date=start_date,

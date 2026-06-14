@@ -87,9 +87,13 @@ from src.infrastructure.services.analysis.pandas.activity.weekly_activity_calcul
     WeeklyActivityCalculator,
 )
 
-#from src.infrastructure.services.renderers.matplotlib.matplotlib_sensor_week_plotter import (
+from src.infrastructure.services.renderers.plotly.plotly_line_chart_renderer import (
+    PlotlyLineChartRenderer,
+)
+
+# from src.infrastructure.services.renderers.matplotlib.matplotlib_sensor_week_plotter import (
 #    MatplotlibSensorWeekPlotter,
-#)
+# )
 
 from src.infrastructure.services.renderers.matplotlib.matplotlib_bar_vertical_chart_renderer import (
     MatplotlibVerticalBarChartPlotter,
@@ -107,13 +111,17 @@ from src.infrastructure.services.renderers.pandas.pandas_dataframe_renderer impo
     PandasDataFrameRenderer,
 )
 
-#from src.infrastructure.services.renderers.markdown.movements_markdown_renderer import (
+from src.infrastructure.services.renderers.plotly.plotly_line_scatter_chart_renderer import (
+    PlotlyScatterLineChartRenderer,
+)
+
+# from src.infrastructure.services.renderers.markdown.movements_markdown_renderer import (
 #    MovementAnalysisMarkdownRenderer,
-#)
+# )
 
 # from src.infrastructure.services.renderers.console.movements_console_renderer import (
 #    MovementAnalysisConsoleRenderer,
-#)
+# )
 
 # --- INTERFACE ADAPTERS
 
@@ -168,7 +176,9 @@ class AnalysisAppContainer:
     charts_presenter_service: ChartsPresenterService
 
     # sensor_week_plotter: MatplotlibSensorWeekPlotter
-    line_chart_plotter: MatplotlibLineChartPlotter
+    line_chart_renderer: PlotlyLineChartRenderer
+    scatter_line_chart_renderer: PlotlyScatterLineChartRenderer
+
     bar_chart_plotter: MatplotlibVerticalBarChartPlotter
     scatter_chart_plotter: MatplotlibScatterChartPlotter
 
@@ -184,8 +194,6 @@ def build_analysis_app_container(
         *,
         read_firebase_node_service
 ) -> AnalysisAppContainer:
-
-
     # --- USE CASES
 
     build_sensor_timeline_uc = (
@@ -236,9 +244,11 @@ def build_analysis_app_container(
         charts_presenter_service=ChartsPresenterService(),
 
         # sensor_week_plotter=MatplotlibSensorWeekPlotter(),
-        line_chart_plotter=MatplotlibLineChartPlotter(),
+        line_chart_renderer=PlotlyLineChartRenderer(),
+        scatter_line_chart_renderer=PlotlyScatterLineChartRenderer(),
         bar_chart_plotter=MatplotlibVerticalBarChartPlotter(),
         scatter_chart_plotter=MatplotlibScatterChartPlotter(),
+
 
         console_view_service=console_view_service,
 

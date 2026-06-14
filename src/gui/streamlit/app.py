@@ -130,7 +130,8 @@ def render_authenticated_phase(
 
         if st.button(
                 "Logout",
-                use_container_width=True,
+                width="stretch",
+                # use_container_width=True,
                 type="secondary",
         ):
             st.session_state["logged_in"] = False

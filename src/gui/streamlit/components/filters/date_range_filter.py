@@ -7,7 +7,7 @@ import streamlit as st
 
 def render_date_range_filter(key_prefix: str) -> tuple[date, date]:
     default_end_date = date.today() - timedelta(days=1)
-    default_start_date = default_end_date - timedelta(days=7)
+    default_start_date = default_end_date - timedelta(days=28)
 
     start_date = st.date_input(
         "Start Date",
@@ -17,7 +17,7 @@ def render_date_range_filter(key_prefix: str) -> tuple[date, date]:
     )
 
     st.caption(
-        f"Selected: {start_date.strftime('%B %d, %Y')}"
+        f"Selected: {start_date.strftime('%B')} {start_date.day}, {start_date.year}"
     )
 
     end_date = st.date_input(
@@ -28,7 +28,7 @@ def render_date_range_filter(key_prefix: str) -> tuple[date, date]:
     )
 
     st.caption(
-        f"Selected: {end_date.strftime('%B %d, %Y')}"
+        f"Selected: {end_date.strftime('%B')} {end_date.day}, {end_date.year}"
     )
 
     if start_date > end_date:

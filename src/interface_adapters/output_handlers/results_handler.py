@@ -1,5 +1,7 @@
 # /src/interface_adapters/output_handlers/results_handler.py
 
+# organize by domain, then by output type (e.g. table, chart, text)
+
 from datetime import date
 
 from src.domain.entities.sensor import SensorEvent
@@ -139,7 +141,6 @@ def handle_result_outputs_orchestrator(
         markdown_renderer=movements_markdown_renderer,
         sensor_plot_presenter=sensor_plot_presenter,
         sensor_plotter=sensor_movement_plotter,
-        path_results=path_results,
     )
     """
 
@@ -166,3 +167,20 @@ def handle_result_outputs_orchestrator(
         end_date=end_date,
 
     )
+
+    """
+    handle_chart_outputs(
+        sensor_events=sensor_events,
+        sensor_ids=sensor_ids,
+        sensor_by_id_events=activity_metrics_result.sensor_by_id_activity,
+        hourly_activity_results=activity_metrics_result.hourly_activity,
+        charts_presenter_service=charts_presenter_service,
+        bar_chart_plotter=bar_chart_plotter,
+        line_chart_plotter=line_chart_plotter,
+        scatter_chart_plotter=scatter_chart_plotter,
+        start_date=start_date,
+        end_date=end_date,
+        path_results=path_results,
+    )
+    """
+

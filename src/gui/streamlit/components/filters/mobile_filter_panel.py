@@ -8,24 +8,28 @@ from .models import AnalysisFilters
 
 
 def render_mobile_filter_panel(
-    available_sensor_ids: list[str],
+        available_sensor_ids: list[str],
 ) -> AnalysisFilters:
     with st.expander("Filters", expanded=False):
+        run_analysis = st.button(
+            "Run Analysis",
+            type="primary",
+            width="stretch",
+            # use_container_width=True,
+            key="mobile_run_analysis",
+        )
+
+        st.divider()
+
         st.subheader("Date Range")
         start_date, end_date = render_date_range_filter("mobile")
 
         st.divider()
+
         st.subheader("Sensor IDs")
         selected_sensor_ids = render_sensor_selector(
             available_sensor_ids=available_sensor_ids,
             key_prefix="mobile",
-        )
-
-        run_analysis = st.button(
-            "Run Analysis",
-            type="primary",
-            use_container_width=True,
-            key="mobile_run_analysis",
         )
 
     return AnalysisFilters(

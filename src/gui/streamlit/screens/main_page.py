@@ -1,17 +1,5 @@
 # /src/gui/streamlit/screens/main_page.py
-
-"""
-1. render_main_page calls controller
-2. controller runs use case(s)
-3. use case(s) return ResultDTOs
-4. presenter converts ResultDTOs to ViewModels
-5. output handler renders ViewModels using Streamlit + Plotly
-
-Use cases should not know Streamlit.
-Presenters should not know Streamlit.
-Plotly builders should not know Streamlit.
-Only output handlers/screens should call st.plotly_chart().
-"""
+from http.client import responses
 
 from src.application.dto.run_startup_use_cases_dtos import (
     RunStartupUseCasesRequestDTO,
@@ -31,24 +19,12 @@ from src.gui.streamlit.components.filters.desktop_filter_panel import (
     render_desktop_filter_panel,
 )
 
-# --- INTERFACE ADAPTERS
+from src.gui.streamlit.output_handlers.activity_charts_handler import (
+    handle_chart_outputs,
+)
 
 from src.interface_adapters.output_handlers.results_handler import (
     handle_result_outputs_orchestrator,
-)
-
-from src.interface_adapters.presenters.activity.activity_presenter_service import (
-    ActivityPresenterService,
-)
-
-# --- INFRASTRUCTURE
-
-from src.infrastructure.services.renderers.pandas.pandas_dataframe_renderer import (
-    PandasDataFrameRenderer,
-)
-
-from src.interface_adapters.views.console.console_view_service import (
-    ConsoleViewService,
 )
 
 from src.main.composition_root_startup import StartupAppContainer
@@ -80,28 +56,6 @@ def render_main_page(
         return
 
     if filters.run_analysis:
-        pass
-        """
-        st.write("Start:", filters.start_date)
-        st.write("End:", filters.end_date)
-        st.write("Sensors:", filters.selected_sensor_ids)
-        
-        analysis_request = RunAnalysisRequestDTO(
-            user_id=startup_request.user_id,
-            start_date=filters.start_date,
-            end_date=filters.end_date,
-            sensor_ids=filters.selected_sensor_ids,
-        )
-        
-        analysis_result = analysis_controller.run(
-            analysis_request,
-        )
-
-        analysis_output_handler.render(
-            result=analysis_result,
-        )
-        """
-
         analysis_request = RunAnalysisUseCasesRequestDTO(
             sensor_ids=filters.selected_sensor_ids,
             start_date=filters.start_date,
@@ -114,9 +68,38 @@ def render_main_page(
             analysis_app.run_controller.run(analysis_request)
         )
 
-        handle_result_outputs_orchestrator(
-            response=analysis_result,
-            activity_presenter_service=analysis_app.activity_presenter_service,
-            console_view_service=analysis_app.console_view_service,
-            dataframe_renderer=analysis_app.dataframe_renderer,
-        )
+        st.session_state["analysis_result"] = analysis_result
+        st.session_state["analysis_filters"] = filters
+
+    analysis_result = st.session_state.get("analysis_result")
+    analysis_filters = st.session_state.get("analysis_filters")
+
+    if analysis_result is None or analysis_filters is None:
+        st.info("Select filters and run analysis.")
+        return
+
+    handle_result_outputs_orchestrator(
+        response=analysis_result,
+        activity_presenter_service=analysis_app.activity_presenter_service,
+        console_view_service=analysis_app.console_view_service,
+        dataframe_renderer=analysis_app.dataframe_renderer,
+    )
+
+    # must call chart-outputs object from here in order to render on main-page
+
+    handle_chart_outputs(
+        # sensor_events=analysis_result.build_sensor_timeline_result.collapsed_events,
+        sensor_ids=filters.selected_sensor_ids,
+        sensor_events_sum_by_id_by_date=analysis_result.analyze_activity_result.sensor_by_id_by_date_activity,
+        all_sensor_events_sum_by_id_by_date=analysis_result.analyze_activity_result.all_sensors_by_date_activity,
+        # hourly_activity_results=analysis_result.activity_result.hourly_activity,
+        charts_presenter_service=analysis_app.charts_presenter_service,
+        # bar_chart_plotter=analysis_app.bar_chart_plotter,
+        line_chart_plotter=analysis_app.line_chart_renderer,
+        scatter_line_chart_plotter=analysis_app.scatter_line_chart_renderer,
+        # scatter_chart_plotter=analysis_app.scatter_chart_plotter,
+        start_date=filters.start_date,
+        end_date=filters.end_date,
+        statistics=analysis_result.analyze_activity_result.sensor_time_period_statistics
+    )
+

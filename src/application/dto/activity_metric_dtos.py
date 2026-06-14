@@ -26,7 +26,14 @@ class SensorByIdByDateActivityDTO:
     date: date
     sensor_id: str
     activation_count: int
+    rolling_average: float
 
+
+@dataclass(frozen=True)
+class SensorAllByDateActivityDTO:
+    date: date
+    activation_count: int
+    rolling_average: float
 
 """
 @dataclass
@@ -101,13 +108,37 @@ class SensorWeeklyActivityDTO:
 
 
 @dataclass
+class SensorTimePeriodStatisticsDTO:
+    sensor_id: str
+    start_date: date
+    end_date: date
+    days_in_period: int
+    total_activation_count: int
+    average_daily_activation_count: float
+    median_daily_activation_count: float
+    maximum_daily_activation: int
+    maximum_daily_activation_date: date
+    minimum_daily_activation: int
+    minimum_daily_activation_date: date
+    percentile_25_daily_activation_count: float
+    percentile_75_daily_activation_count: float
+    standard_deviation_daily_activations: float
+    coefficient_variation: float
+    active_day_count: int
+    inactive_day_count: int
+    # trend_direction: str
+    # trend_slope_per_day: float
+
+
+@dataclass
 class ActivityMetricsCalculatorResultDTO:
     # user_id: str
     start_date: date
     end_date: date
     daily_activity: list[DailyActivityDTO]
     combined_sensor_activity: list[CombinedSensorActivityDTO]
-    sensor_by_id_activity: list[SensorByIdByDateActivityDTO]
+    sensor_by_id_by_date_activity: list[SensorByIdByDateActivityDTO]
+    all_sensors_by_date_activity: list[SensorAllByDateActivityDTO]
     hourly_activity: list[HourlyActivityDTO]
     rolling_activity: list[RollingActivityDTO]
     peak_activity: list[PeakActivityDTO]
@@ -115,3 +146,4 @@ class ActivityMetricsCalculatorResultDTO:
     activity_distribution: ActivityDistributionDTO
     activity_trends_by_sensor_id: list[ActivityTrendDTO]
     weekly_activity_by_sensor_id: list[SensorWeeklyActivityDTO]
+    time_period_statistics_by_sensor_id: list[SensorTimePeriodStatisticsDTO]

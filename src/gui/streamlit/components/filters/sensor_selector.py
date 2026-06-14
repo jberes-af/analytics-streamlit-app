@@ -22,7 +22,7 @@ def render_sensor_selector(
         is_selected = st.checkbox(
             sensor_id,
             #
-            value=False,
+            value=True,
             key=f"{key_prefix}_sensor_{sensor_id}",
         )
 

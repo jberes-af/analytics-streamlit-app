@@ -41,3 +41,18 @@ def convert_datetime_to_seconds_since_midnight(
         + timestamp.minute * 60
         + timestamp.second
     )
+
+
+def get_date_range_in_between_two_dates(
+        start_date: date,
+        end_date: date,
+) -> list[date]:
+    if end_date < start_date:
+        raise ValueError("end_date must be greater than or equal to start_date")
+
+    days = (end_date - start_date).days
+
+    return [
+        start_date + timedelta(days=offset)
+        for offset in range(days + 1)
+    ]

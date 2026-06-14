@@ -41,7 +41,7 @@ class ActivityAnalysisMetricsPresenter:
                 title="",
                 subtitle="",
                 summary_text="",
-                user_id="",
+                # user_id="",
                 date_range="",
                 daily_activity=self._empty_daily_activity(),
                 sensor_activity=self._empty_sensor_activity(),

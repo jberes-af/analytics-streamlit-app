@@ -9,6 +9,7 @@ from src.domain.entities.sensor import SensorEvent
 from src.application.dto.activity_metric_dtos import (
     ActivityTrendDTO,
     CombinedSensorActivityDTO,
+    SensorTimePeriodStatisticsDTO,
 )
 
 from src.application.dto.activity_uc_dtos import (
@@ -17,9 +18,6 @@ from src.application.dto.activity_uc_dtos import (
 )
 
 # --- INTERFACE ADAPTERS
-
-from src.interface_adapters.output_handlers.activity.activity_charts_handler import (
-    handle_chart_outputs)
 
 from src.interface_adapters.output_handlers.activity.results_to_dataframe_adapter import (
     transform_results_to_dataframe,
@@ -34,12 +32,12 @@ from src.interface_adapters.views.console.console_view_service import (
     ConsoleViewService,
 )
 
-from src.interface_adapters.presenters.charts.charts_presenter_service import (
-    ChartsPresenterService,
-)
-
 from src.interface_adapters.view_models.activity.activity_metrics_vm import (
     ActivityAnalysisViewModel,
+)
+
+from src.interface_adapters.view_models.activity.sensor_statistics_vm import (
+    SensorTimePeriodStatisticsViewModel,
 )
 
 from src.interface_adapters.views.console.debug_console_view import (
@@ -50,18 +48,6 @@ from src.interface_adapters.views.console.debug_console_view import (
 
 from src.infrastructure.services.renderers.pandas.pandas_dataframe_renderer import (
     PandasDataFrameRenderer,
-)
-
-from src.infrastructure.services.renderers.matplotlib.matplotlib_bar_vertical_chart_renderer import (
-    MatplotlibVerticalBarChartPlotter,
-)
-
-from src.infrastructure.services.renderers.matplotlib.matplotlib_line_chart_renderer import (
-    MatplotlibLineChartPlotter,
-)
-
-from src.infrastructure.services.renderers.matplotlib.matplotlib_scatter_chart_renderer import (
-    MatplotlibScatterChartPlotter,
 )
 
 
@@ -87,7 +73,7 @@ def handle_result_outputs_activity(
     _handle_sensor_summary_outputs(
         sensor_ids=sensor_ids,
         combined_sensor_activity=activity_metrics_result.combined_sensor_activity,
-        sensor_by_id_activity=activity_metrics_result.sensor_by_id_activity,
+        sensor_by_id_activity=activity_metrics_result.sensor_by_id_by_date_activity,
         start_date=start_date,
         end_date=end_date,
     )
@@ -101,6 +87,11 @@ def handle_result_outputs_activity(
     _handle_sensor_trend_outputs(
         sensor_ids=sensor_ids,
         result=activity_metrics_result.sensor_activity_trends,
+    )
+
+    _handle_sensor_activity_time_period_statistics(
+        results=activity_metrics_result.sensor_time_period_statistics,
+        presenter_service=activity_presenter_service,
     )
 
     _handle_activity_metrics_outputs(
@@ -173,6 +164,15 @@ def _handle_sensor_trend_outputs(
     DebugConsoleView().render_sensor_trend_result(
         sensor_ids=sensor_ids,
         result=result,
+    )
+
+
+def _handle_sensor_activity_time_period_statistics(
+        results: list[SensorTimePeriodStatisticsDTO],
+        presenter_service: ActivityPresenterService,
+) -> SensorTimePeriodStatisticsViewModel:
+    return presenter_service.present_time_period_activity_statistics(
+        results=results,
     )
 
 

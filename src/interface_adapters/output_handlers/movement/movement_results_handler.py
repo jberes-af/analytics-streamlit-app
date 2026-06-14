@@ -77,7 +77,7 @@ def _handle_movements_analysis_outputs(
         sensor_plotter: MatplotlibSensorWeekPlotter,
         path_results: Path,
 ) -> None:
-    movement_vm = presenter.present(movements_result)
+    movement_vm = presenter.present_timestamp_chart(movements_result)
 
     console_renderer.render(movement_vm)
 
@@ -89,7 +89,7 @@ def _handle_movements_analysis_outputs(
 
     path_plots: Path = path_results / "plots" / "sensor_week_plot.png"
 
-    sensor_plot_vm = sensor_plot_presenter.present(
+    sensor_plot_vm = sensor_plot_presenter.present_timestamp_chart(
         SensorWeekPlotRequest(
             events=sensor_events,
             sensor_ids=sensor_ids,

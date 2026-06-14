@@ -70,7 +70,7 @@ def _handle_run_all_configuration(
         for event in most_recent_events
     }
 
-    run_configuration_vm = RunConfigurationPresenter().present(
+    run_configuration_vm = RunConfigurationPresenter().present_timestamp_chart(
         run_all_request,
         sensor_ids,
         sensor_profiles,

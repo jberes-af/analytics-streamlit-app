@@ -66,3 +66,21 @@ class ScatterChartVM:
     x_tick_labels: Sequence[str] | None
     y_tick_labels: Sequence[str] | None
     series: Sequence[SeriesVM]
+
+
+"""
+COMBO SCATTER-LINE CHARTS
+"""
+
+
+@dataclass(frozen=True)
+class ScatterLineChartVM:
+    title: str
+    x_axis_label: str
+    y_axis_label: str
+    x_tick_labels: Sequence[str] | None
+    y_tick_labels: Sequence[str] | None
+    scatter_series: Sequence[SeriesVM]
+    line_series: Sequence[SeriesVM]
+    x_tick_coords: Sequence[int | float] | None = None
+    y_tick_coords: Sequence[int | float] | None = None
