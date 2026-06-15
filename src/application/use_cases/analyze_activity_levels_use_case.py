@@ -49,7 +49,10 @@ class AnalyzeActivityLevelsUseCase:
             peak_activity=result.peak_activity,
             inactivity_periods=result.inactivity_periods,
             activity_distribution=result.activity_distribution,
-            sensor_activity_trends=result.activity_trends_by_sensor_id,
+
+            activity_trend_by_sensor_id=result.activity_trends_by_sensor_id,
+            activity_trend_all_sensors=result.activity_trend_all_sensors,
+
             weekly_sensor_activity=result.weekly_activity_by_sensor_id,
             sensor_time_period_statistics=result.time_period_statistics_by_sensor_id,
         )

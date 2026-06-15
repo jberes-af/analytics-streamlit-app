@@ -25,10 +25,28 @@ from src.infrastructure.config.settings_model import (
     Settings,
 )
 
+USERS: dict[str, str] = {
+    "AC+ Carrollton": "ECvBp9PdfagWJdBV2WrGwc4a6Wl1",
+    "ARH Clifton Forge": "fI2oxx61iLcdX9EESZHpZCacx4B3",
+    "ARH Emporia": "9Aq5EAqls4hWLfuiJSFqruy2mvT2",
+    "ARH Lexington": "ssSOQyDrfeh8P7w9TJDFPjhlRuw2",
+    "ARH Tappahannock": "KknUjuaVFaZZwsSM9jGf5tuMnYJ2",
+    "Barnes": "LDM9dW0TuoZOg9wCtS6wXncud842",
+    "Dallas Preserve Katie": "6fTPx9JglJXRB2YWbFgm0AUXfev2",
+    "Chattington Manor": "AHcUuyTpTNRGZYLBzVIGZdbOXfq1",
+    "Test Carrollton": "9Hajs1JHaHdVLqqnUOvlnbu45BO2",
+    "Test Greenville": "7APGmTpXfmTP06FMM9SRoPGt59t1",
+    "Dragon Pups": "wVp85WoiDxWesZKNxXuIHmBHfnq1",
+}
+
+USER_KEY: str = "Barnes"
+
 def load_settings(
         *,
         project_root: Path,
         secret_provider: SecretProvider,
+        app_mode: AppMode = AppMode.DEVELOPMENT,
+        user_key: str = "ARH Lexington",
 ) -> Settings:
     project_root = project_root.resolve()
 
@@ -67,8 +85,8 @@ def load_settings(
     firebase_web = load_firebase_web_settings(secret_provider)
     firebase_admin = load_firebase_admin_settings(secret_provider)
 
-    app_mode: AppMode = AppMode.DEVELOPMENT
-    dev_user_id: str = "ssSOQyDrfeh8P7w9TJDFPjhlRuw2"
+    dev_user_id: str = USERS[user_key]
+    # dev_user_id: str = "ssSOQyDrfeh8P7w9TJDFPjhlRuw2"
 
     return Settings(
         app_mode=app_mode,

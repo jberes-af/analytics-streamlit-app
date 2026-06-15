@@ -156,5 +156,8 @@ class ActivityMetricsCalculatorResultDTO:
     inactivity_periods: list[InactivityPeriodDTO]
     activity_distribution: ActivityDistributionDTO
     activity_trends_by_sensor_id: list[ActivityTrendDTO]
+
+    activity_trend_all_sensors: list[ActivityTrendDTO]
+
     weekly_activity_by_sensor_id: list[SensorWeeklyActivityDTO]
     time_period_statistics_by_sensor_id: list[SensorTimePeriodStatisticsDTO]

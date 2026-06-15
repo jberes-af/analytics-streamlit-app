@@ -1,7 +1,7 @@
 # /src/interface_adapters/presenters/activity/activity_presenter_service.py
 
 from src.application.dto.activity_metric_dtos import (
-    SensorTimePeriodStatisticsDTO,
+    SensorTimePeriodStatisticsDTO, ActivityTrendDTO,
 )
 
 from src.application.use_cases.analyze_activity_levels_use_case import (
@@ -20,6 +20,10 @@ from src.interface_adapters.presenters.activity.sensor_statistics_presenter impo
     SensorTimePeriodStatisticsPresenter,
 )
 
+from src.interface_adapters.presenters.activity.activity_trend_presenter import (
+    ActivityTrendPresenter,
+)
+
 from src.interface_adapters.view_models.activity.activity_metrics_vm import (
     ActivityAnalysisViewModel,
 )
@@ -32,6 +36,10 @@ from src.interface_adapters.view_models.activity.sensor_statistics_vm import (
     SensorTimePeriodStatisticsViewModel,
 )
 
+from src.interface_adapters.view_models.activity.activity_trend_vm import (
+    ActivityTrendViewModel,
+)
+
 
 class ActivityPresenterService:
     def __init__(
@@ -39,10 +47,12 @@ class ActivityPresenterService:
             activity_metrics_presenter: ActivityAnalysisMetricsPresenter,
             weekly_activity_presenter: WeeklyActivityPresenter,
             sensor_activity_statistics_presenter: SensorTimePeriodStatisticsPresenter,
+            activity_trend_presenter: ActivityTrendPresenter,
     ):
         self._metrics_presenter = activity_metrics_presenter
         self._weekly_presenter = weekly_activity_presenter
         self._statistics_presenter = sensor_activity_statistics_presenter
+        self._trend_presenter = activity_trend_presenter
 
     def present_activity_metrics(
             self,
@@ -69,3 +79,12 @@ class ActivityPresenterService:
             results: list[SensorTimePeriodStatisticsDTO],
     ) -> SensorTimePeriodStatisticsViewModel:
         return self._statistics_presenter.present(results)
+
+    def present_activity_trend(
+            self,
+            sensor_ids: list[str],
+            trend_results: list[ActivityTrendDTO],
+    ) -> ActivityTrendViewModel:
+        return self._trend_presenter.present(
+            sensor_ids=sensor_ids,
+            result=trend_results)

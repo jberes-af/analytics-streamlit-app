@@ -53,20 +53,11 @@ from src.infrastructure.services.renderers.pandas.pandas_dataframe_renderer impo
 
 def handle_result_outputs_activity(
         sensor_events: list[SensorEvent],
-
         activity_metrics_result: ActivityAnalysisResultDTO,
         activity_presenter_service: ActivityPresenterService,
         dataframe_renderer: PandasDataFrameRenderer,
-
         sensor_ids: list[str],
-        # charts_presenter_service: ChartsPresenterService,
-
         console_view_service: ConsoleViewService,
-
-        # bar_chart_plotter: MatplotlibVerticalBarChartPlotter,
-        # ine_chart_plotter: MatplotlibLineChartPlotter,
-        # scatter_chart_plotter: MatplotlibScatterChartPlotter,
-
         start_date: date,
         end_date: date,
 ) -> None:
@@ -86,7 +77,7 @@ def handle_result_outputs_activity(
 
     _handle_sensor_trend_outputs(
         sensor_ids=sensor_ids,
-        result=activity_metrics_result.sensor_activity_trends,
+        result=activity_metrics_result.activity_trend_by_sensor_id,
     )
 
     _handle_sensor_activity_time_period_statistics(
@@ -100,22 +91,6 @@ def handle_result_outputs_activity(
         console_view_service=console_view_service,
         dataframe_renderer=dataframe_renderer,
     )
-
-    """
-    handle_chart_outputs(
-        sensor_events=sensor_events,
-        sensor_ids=sensor_ids,
-        sensor_by_id_events=activity_metrics_result.sensor_by_id_activity,
-        hourly_activity_results=activity_metrics_result.hourly_activity,
-        charts_presenter_service=charts_presenter_service,
-        bar_chart_plotter=bar_chart_plotter,
-        line_chart_plotter=line_chart_plotter,
-        scatter_chart_plotter=scatter_chart_plotter,
-        start_date=start_date,
-        end_date=end_date,
-        path_results=path_results,
-    )
-    """
 
 
 def _handle_activity_metrics_outputs(

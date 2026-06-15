@@ -1,5 +1,19 @@
 # src/gui/streamlit/app.py
 
+"""
+    "AC+ Carrollton": "ECvBp9PdfagWJdBV2WrGwc4a6Wl1",
+    "ARH Clifton Forge": "fI2oxx61iLcdX9EESZHpZCacx4B3",
+    "ARH Emporia": "9Aq5EAqls4hWLfuiJSFqruy2mvT2",
+    "ARH Lexington": "ssSOQyDrfeh8P7w9TJDFPjhlRuw2",
+    "ARH Tappahannock": "KknUjuaVFaZZwsSM9jGf5tuMnYJ2",
+    "Barnes": "LDM9dW0TuoZOg9wCtS6wXncud842",
+    "Dallas Preserve Katie": "6fTPx9JglJXRB2YWbFgm0AUXfev2",
+    "Chattington Manor": "AHcUuyTpTNRGZYLBzVIGZdbOXfq1",
+    "Test Carrollton": "9Hajs1JHaHdVLqqnUOvlnbu45BO2",
+    "Test Greenville": "7APGmTpXfmTP06FMM9SRoPGt59t1",
+    "Dragon Pups": "wVp85WoiDxWesZKNxXuIHmBHfnq1",
+"""
+
 from pathlib import Path
 
 import sys
@@ -30,13 +44,14 @@ from src.main.composition_root import (
 
 import streamlit as st
 
-path_file_favicon = PROJECT_ROOT / "src/gui/streamlit/static/favicon" / "favicon.ico"
-
+PATH_FILE_FAVICON = PROJECT_ROOT / "src/gui/streamlit/static/favicon" / "favicon.ico"
+APP_MODE: AppMode = AppMode.DEVELOPMENT
+USER_KEY: str = "ARH Lexington"  # "Barnes"
 
 def configure_page() -> None:
     st.set_page_config(
         page_title="Alerta Home Analytics",
-        page_icon=path_file_favicon,
+        page_icon=PATH_FILE_FAVICON,
         layout="wide",
     )
 
@@ -145,7 +160,10 @@ def run_streamlit_app() -> None:
 
     settings: Settings
     config: AppRuntimeConfig
-    settings, config = load_runtime_config()
+    settings, config = load_runtime_config(
+        app_mode=APP_MODE,
+        user_key=USER_KEY,
+    )
 
     app_containers: StreamlitDependencies = build_app_containers(
         settings=settings

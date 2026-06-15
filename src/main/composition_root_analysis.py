@@ -36,14 +36,6 @@ from src.application.use_cases.analyze_activity_levels_use_case import (
 
 # --- INFRASTRUCTURE ADAPTERS
 
-from src.infrastructure.config.settings_loader import Settings
-
-from src.infrastructure.persistence.firebase.firebase_app import (
-    init_firebase_admin_app)
-
-from src.infrastructure.persistence.firebase.firebase_rtdb_adapter import (
-    FirebaseRtdbAdapter)
-
 from src.infrastructure.services.analysis.pandas.activity.activity_metrics_calculator import (
     PandasActivityMetricsCalculator,
 )
@@ -116,14 +108,6 @@ from src.infrastructure.services.renderers.pandas.pandas_dataframe_renderer impo
     PandasDataFrameRenderer,
 )
 
-# from src.infrastructure.services.renderers.markdown.movements_markdown_renderer import (
-#    MovementAnalysisMarkdownRenderer,
-# )
-
-# from src.infrastructure.services.renderers.console.movements_console_renderer import (
-#    MovementAnalysisConsoleRenderer,
-# )
-
 # --- INTERFACE ADAPTERS
 
 from src.interface_adapters.controllers.analysis_controller import (
@@ -140,6 +124,10 @@ from src.interface_adapters.presenters.activity.weekly_activity_presenter import
 
 from src.interface_adapters.presenters.activity.activity_presenter_service import (
     ActivityPresenterService,
+)
+
+from src.interface_adapters.presenters.activity.activity_trend_presenter import (
+    ActivityTrendPresenter,
 )
 
 from src.interface_adapters.presenters.activity.sensor_statistics_presenter import (
@@ -231,6 +219,7 @@ def build_analysis_app_container(
         activity_metrics_presenter=ActivityAnalysisMetricsPresenter(),
         weekly_activity_presenter=WeeklyActivityPresenter(),
         sensor_activity_statistics_presenter=SensorTimePeriodStatisticsPresenter(),
+        activity_trend_presenter=ActivityTrendPresenter(),
     )
 
     # --- VIEWS

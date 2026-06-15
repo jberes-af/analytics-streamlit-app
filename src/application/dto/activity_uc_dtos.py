@@ -46,12 +46,16 @@ class ActivityAnalysisResultDTO:
     all_sensors_by_date_activity: list[DailyActivityAllSensorsDTO]
 
     sensor_by_id_by_hour_activity: list[HourlyActivityBySensorIdDTO]
+
     all_sensors_by_hour_activity: list[HourlyActivityAllSensorsDTO]
 
     rolling_activity: list[RollingActivityDTO]
     peak_activity: list[PeakActivityDTO]
     inactivity_periods: list[InactivityPeriodDTO]
     activity_distribution: ActivityDistributionDTO
-    sensor_activity_trends: list[ActivityTrendDTO]
+
+    activity_trend_by_sensor_id: list[ActivityTrendDTO]
+    activity_trend_all_sensors: list[ActivityTrendDTO]
+
     weekly_sensor_activity: list[SensorWeeklyActivityDTO]
     sensor_time_period_statistics: list[SensorTimePeriodStatisticsDTO]

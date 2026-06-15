@@ -8,62 +8,45 @@ from src.application.dto.activity_metric_dtos import ActivityTrendDTO
 import numpy as np
 import pandas as pd
 
+ALL_SENSORS_ID = "ALL"
+TREND_PERIODS = [7, 14, 30]
+
 
 class ActivityTrendCalculator:
     def __init__(
             self,
             rolling_window_days: int | None = 7,
-            stable_threshold: float = 1.0,
     ) -> None:
         self._rolling_window_days = rolling_window_days
-        self._stable_threshold = stable_threshold
 
-    def calculate_from_daily_counts(
+    def calculate_trend_for_all_sensors_from_daily_counts(
             self,
-            daily_counts: pd.Series,
+            df: pd.DataFrame,
             metric_name: str,
-    ) -> ActivityTrendDTO | None:
-        if daily_counts.empty or len(daily_counts) < 2:
-            return None
+    ) -> list[ActivityTrendDTO]:
 
-        daily_counts = daily_counts.sort_index()
+        daily_counts = (
+            df.groupby("date")
+            .size()
+            .rename("activation_count")
+            .sort_index()
+        )
 
-        if self._rolling_window_days:
-            y_series = (
-                daily_counts
-                .rolling(window=self._rolling_window_days)
-                .mean()
-                .dropna()
-            )
-        else:
-            y_series = daily_counts
+        date_index = pd.date_range(
+            start=daily_counts.index.min(),
+            end=daily_counts.index.max(),
+            freq="D",
+        ).date
 
-        if len(y_series) < 2:
-            return None
+        daily_counts = daily_counts.reindex(
+            date_index,
+            fill_value=0,
+        )
 
-        x = np.arange(len(y_series)).reshape(-1, 1)
-        y = y_series.to_numpy()
-
-        model = LinearRegression()
-        model.fit(x, y)
-
-        slope = float(model.coef_[0])
-        intercept = float(model.intercept_)
-
-        if slope > self._stable_threshold:
-            direction = "increasing"
-        elif slope < -self._stable_threshold:
-            direction = "decreasing"
-        else:
-            direction = "stable"
-
-        return ActivityTrendDTO(
+        return self._calculate_trends_for_daily_counts(
+            daily_counts=daily_counts,
             metric_name=metric_name,
-            slope_per_day=slope,
-            intercept=intercept,
-            direction=direction,
-            start_date=y_series.index.min(),
-            end_date=y_series.index.max(),
+            sensor_id=ALL_SENSORS_ID,
         )
 
     def calculate_trend_by_sensor_id_from_table(
@@ -71,10 +54,7 @@ class ActivityTrendCalculator:
             df: pd.DataFrame,
             metric_name: str,
     ) -> list[ActivityTrendDTO]:
-
-        # df.to_csv("bob2222.csv", index=False)
-
-        required_columns: set = {"date", "sensor_id"}
+        required_columns = {"date", "sensor_id"}
 
         if df.empty:
             return []
@@ -102,43 +82,74 @@ class ActivityTrendCalculator:
                 .sort_index()
             )
 
-            if self._rolling_window_days:
-                y_series = (
-                    daily_counts
-                    .rolling(window=self._rolling_window_days)
-                    .mean()
-                    .dropna()
+            results.extend(
+                self._calculate_trends_for_daily_counts(
+                    daily_counts=daily_counts,
+                    metric_name=metric_name,
+                    sensor_id=str(sensor_id),
                 )
-            else:
-                y_series = daily_counts
-
-            if len(y_series) < 2:
-                continue
-
-            for points in [7, 14, 30]:
-                trend_results: tuple[float, float, str] = (
-                    self._calculate_trend_direction_for_period_length(
-                        y_series_00=y_series,
-                        last_smoothed_points_count=points,
-                    ))
-
-                slope: float = trend_results[0]
-                intercept: float = trend_results[1]
-                direction: str = trend_results[2]
-
-                results.append(
-                    ActivityTrendDTO(
-                        metric_name=f"{metric_name}_{sensor_id}_last_{points}_days",
-                        slope_per_day=slope,
-                        intercept=intercept,
-                        direction=direction,
-                        start_date=y_series.index.min(),
-                        end_date=y_series.index.max(),
-                        sensor_id=sensor_id,
-                    )
-                )
+            )
 
         return results
+
+    def _calculate_trends_for_daily_counts(
+            self,
+            daily_counts: pd.Series,
+            metric_name: str,
+            sensor_id: str,
+    ) -> list[ActivityTrendDTO]:
+        if daily_counts.empty or len(daily_counts) < 2:
+            return []
+
+        y_series = self._smooth_series(daily_counts)
+
+        if len(y_series) < 2:
+            return []
+
+        results: list[ActivityTrendDTO] = []
+
+        for points in TREND_PERIODS:
+            period_series = y_series.tail(points)
+
+            trend_result = self._calculate_trend_direction_for_period_length(
+                y_series_00=y_series,
+                last_smoothed_points_count=points,
+            )
+
+            if trend_result is None:
+                continue
+
+            slope, intercept, direction = trend_result
+
+            results.append(
+                ActivityTrendDTO(
+                    metric_name=f"{metric_name}_{sensor_id}_last_{points}_days",
+                    slope_per_day=slope,
+                    intercept=intercept,
+                    direction=direction,
+                    start_date=period_series.index.min(),
+                    end_date=period_series.index.max(),
+                    sensor_id=sensor_id,
+                )
+            )
+
+        return results
+
+    def _smooth_series(
+            self,
+            daily_counts: pd.Series,
+    ) -> pd.Series:
+        daily_counts = daily_counts.sort_index()
+
+        if self._rolling_window_days is None:
+            return daily_counts
+
+        return (
+            daily_counts
+            .rolling(window=self._rolling_window_days)
+            .mean()
+            .dropna()
+        )
 
     def _calculate_trend_direction_for_period_length(
             self,

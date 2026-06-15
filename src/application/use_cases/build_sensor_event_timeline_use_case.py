@@ -74,10 +74,6 @@ class BuildSensorEventTimelineUseCase:
             local_timezone=local_tz,
         )
 
-        print("**********")
-        print(start_time, end_time)
-        print("**********")
-
         time_period_events: list[SensorEvent] = (
             self._filter_events_by_time_period(
                 events=events,

@@ -116,13 +116,22 @@ class PandasActivityMetricsCalculator(ActivityMetricsCalculatorPort):
                     least_active_hour=None,
                 ),
                 activity_trends_by_sensor_id=[],
+                activity_trend_all_sensors=[],
                 weekly_activity_by_sensor_id=[],
+                time_period_statistics_by_sensor_id=[],
             )
+
+        activity_trend_all_sensors = (
+            self.activity_trend_calculator.calculate_trend_for_all_sensors_from_daily_counts(
+                df=df,
+                metric_name="daily_activity_trend_all_sensors",
+            )
+        )
 
         activity_trends_by_sensor = (
             self.activity_trend_calculator.calculate_trend_by_sensor_id_from_table(
                 df=df,
-                metric_name="sensor_activity_trend",
+                metric_name="daily_activity_trend_by_sensor_id",
             )
         )
 
@@ -180,6 +189,8 @@ class PandasActivityMetricsCalculator(ActivityMetricsCalculatorPort):
             ),
 
             activity_trends_by_sensor_id=activity_trends_by_sensor,
+
+            activity_trend_all_sensors=activity_trend_all_sensors,
 
             weekly_activity_by_sensor_id=(
                 self.weekly_activity_calculator.calculate_from_daily_counts(df)

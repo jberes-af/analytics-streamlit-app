@@ -27,6 +27,8 @@ from src.application.use_cases.lookup_sensor_by_user_use_case import (
 from src.infrastructure.config.settings_model import Settings
 from src.infrastructure.config.app_config_models import AppRuntimeConfig
 
+from src.infrastructure.config.settings_model import AppMode
+
 from src.infrastructure.config.secret_provider import (
     SecretProvider,
     EnvSecretProvider,
@@ -69,7 +71,10 @@ def resolve_project_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
-def load_runtime_config() -> tuple[Settings, AppRuntimeConfig]:
+def load_runtime_config(
+        app_mode: AppMode,
+        user_key: str,
+) -> tuple[Settings, AppRuntimeConfig]:
     project_root = resolve_project_root()
 
     logging.info("Project root resolved: %s", project_root)
@@ -82,6 +87,8 @@ def load_runtime_config() -> tuple[Settings, AppRuntimeConfig]:
     settings = load_settings(
         project_root=project_root,
         secret_provider=secret_provider,
+        app_mode=app_mode,
+        user_key=user_key,
     )
     logging.info("Settings loaded")
 
