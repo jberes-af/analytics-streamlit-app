@@ -114,7 +114,6 @@ def _build_trend_view_models(
             sensor_id = row.sensor_id
             metric = row.metric_name
             trend_direction = row.direction
-            print(metric, trend_direction)
 
             a[metric] = trend_direction
             if sensor_id in b:

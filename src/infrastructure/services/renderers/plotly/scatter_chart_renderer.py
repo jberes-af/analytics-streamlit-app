@@ -78,12 +78,23 @@ class PlotlyScatterChartRenderer:
             ],
         )
 
+        step = 2
+
         if chart_vm.x_tick_coords and chart_vm.x_tick_labels:
+            display_ticks = list(
+                zip(
+                    chart_vm.x_tick_coords,
+                    chart_vm.x_tick_labels,
+                )
+            )[::step]
+
             fig.update_xaxes(
                 tickmode="array",
-                tickvals=list(chart_vm.x_tick_coords),
-                ticktext=list(chart_vm.x_tick_labels),
+                tickvals=[v for v, _ in display_ticks],
+                ticktext=[t for _, t in display_ticks],
+                tickangle=0,
             )
+
 
         if chart_vm.y_tick_coords and chart_vm.y_tick_labels:
             fig.update_yaxes(
