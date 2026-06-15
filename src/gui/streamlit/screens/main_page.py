@@ -23,6 +23,10 @@ from src.gui.streamlit.output_handlers.activity_charts_handler import (
     handle_chart_outputs,
 )
 
+from src.gui.streamlit.components.filters.models import (
+    AnalysisFilters,
+)
+
 from src.interface_adapters.output_handlers.results_handler import (
     handle_result_outputs_orchestrator,
 )
@@ -44,7 +48,7 @@ def render_main_page(
     lookup_results: SensorByUserResultDTO = (
         startup_result.lookup_sensor_by_user_result)
 
-    filters = render_desktop_filter_panel(
+    filters: AnalysisFilters = render_desktop_filter_panel(
         available_sensor_ids=lookup_results.sensor_ids,
         sensor_names=lookup_results.sensor_names,
     )
@@ -70,6 +74,7 @@ def render_main_page(
             end_date=filters.end_date,
             rolling_window="7",
             rolling_frequency="7",
+            local_timezone=filters.local_timezone,
         )
 
         analysis_result: RunAnalysisUseCasesResultDTO = (
@@ -112,6 +117,7 @@ def render_main_page(
         scatter_chart_plotter=analysis_app.scatter_chart_plotter,
         start_date=filters.start_date,
         end_date=filters.end_date,
-        statistics=analysis_result.analyze_activity_result.sensor_time_period_statistics
+        statistics=analysis_result.analyze_activity_result.sensor_time_period_statistics,
+        local_timezone = filters.local_timezone,
     )
 

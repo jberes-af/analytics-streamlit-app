@@ -65,4 +65,5 @@ def render_desktop_filter_panel(
         selected_sensor_ids=selected_sensor_ids,
         run_analysis=run_analysis,
         is_valid=start_date <= end_date and bool(selected_sensor_ids),
+        local_timezone="America/New_York"
     )

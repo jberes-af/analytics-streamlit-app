@@ -150,6 +150,7 @@ class RunAnalysisUseCasesInteractor(Protocol):
             sensor_ids=request.sensor_ids,
             start_date=request.start_date,
             end_date=request.end_date,
+            local_timezone=request.local_timezone,
         )
 
         result: SensorEventTimelineResultDTO = (

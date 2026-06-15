@@ -2,6 +2,7 @@
 
 from datetime import date, datetime
 from typing import Sequence
+from zoneinfo import ZoneInfo
 
 from src.domain.entities.sensor import SensorEvent
 from src.interface_adapters.utilities_data import convert_datetime_to_seconds_since_midnight
@@ -24,6 +25,7 @@ class SensorActivityTimestampScatterChartPresenter:
             start_date: date | None,
             end_date: date | None,
             tail_day_count: int | None,
+            local_timezone: str,
     ):
         result: dict[str, ScatterChartVM] = {}
 
@@ -31,6 +33,7 @@ class SensorActivityTimestampScatterChartPresenter:
             end_date=end_date,
             tail_day_count=tail_day_count,
             sensor_events=sensor_events,
+            local_timezone=local_timezone,
         )
 
         events_mapping: dict[str, list[SensorEvent]] = {}
@@ -100,13 +103,13 @@ class SensorActivityTimestampScatterChartPresenter:
 
         sorted_events = sorted(
             values,
-            key=lambda event: event.activated_at,
+            key=lambda event: event.activated_at_utc,
         )
 
         points: list[PointVM] = []
 
         for event in sorted_events:
-            event_date = event.activated_at.date()
+            event_date = event.activated_at_utc.date()
 
             if event_date not in date_to_day_index:
                 continue
@@ -115,7 +118,7 @@ class SensorActivityTimestampScatterChartPresenter:
                 PointVM(
                     x=date_to_day_index[event_date],
                     y=convert_datetime_to_seconds_since_midnight(
-                        event.activated_at
+                        event.activated_at_utc
                     ),
                 )
             )
@@ -143,6 +146,7 @@ def _preprocess_input_dates(
         end_date: date | None,
         tail_day_count: int | None,
         sensor_events: list[SensorEvent],
+        local_timezone: str,
 ) -> list[SensorEvent]:
     start_date: date = get_start_date_from_end_date_and_days_delta(
         end_date=end_date,
@@ -154,6 +158,7 @@ def _preprocess_input_dates(
     start_time, end_time = convert_date_to_datetime(
         start_date=start_date,
         end_date=end_date,
+        local_timezone=local_timezone,
     )
 
     tail_days_events: list[SensorEvent] = filter_events_by_time_period(

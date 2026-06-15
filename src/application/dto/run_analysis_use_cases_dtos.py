@@ -25,6 +25,7 @@ class RunAnalysisUseCasesRequestDTO:
     end_date: date
     rolling_window: str
     rolling_frequency: str
+    local_timezone: str  # e.g. America / New_York
     # path_results: Path
 
 

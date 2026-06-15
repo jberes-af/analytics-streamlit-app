@@ -28,6 +28,7 @@ class SensorEventTimelineRequestDTO:
     sensor_ids: list[str]
     start_date: date
     end_date: date
+    local_timezone: str
 
 
 @dataclass(frozen=True)

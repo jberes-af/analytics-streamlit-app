@@ -66,7 +66,7 @@ def _handle_run_all_configuration(
 ) -> None:
 
     id_to_last_activation: dict[str, datetime | None] = {
-        event.sensor_id: event.activated_at
+        event.sensor_id: event.activated_at_utc
         for event in most_recent_events
     }
 

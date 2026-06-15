@@ -84,14 +84,14 @@ class GetSensorConnectivityStatusUseCase:
 
             if (
                     current_event is None
-                    or event.activated_at > current_event.activated_at
+                    or event.activated_at_utc > current_event.activated_at_utc
             ):
                 id_to_event[event.sensor_id] = event
 
         return [
             MostRecentSensorEventDTO(
                 sensor_id=sensor_id,
-                activated_at=event.activated_at if event else None,
+                activated_at=event.activated_at_utc if event else None,
                 # sensor_state=event.sensor_state if event else None,
             )
             for sensor_id, event in id_to_event.items()

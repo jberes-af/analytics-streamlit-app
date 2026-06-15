@@ -7,7 +7,8 @@ from datetime import datetime
 @dataclass(frozen=True)
 class SensorEvent:
     sensor_id: str
-    activated_at: datetime
+    activated_at_utc: datetime  # UTC
+    activated_at_local: datetime  # local time: default America / New_York
     sensor_state: str
 
 

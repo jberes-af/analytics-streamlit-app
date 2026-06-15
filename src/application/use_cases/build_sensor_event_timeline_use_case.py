@@ -1,8 +1,9 @@
 # /src/application/use_cases/build_sensor_event_timeline_use_case.py
 
 
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timezone
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from src.application.dto.read_firebase_node_dtos import NodeType
 
@@ -37,7 +38,6 @@ class BuildSensorEventTimelineUseCase:
 
         sensor_ids: list[str] = request.sensor_ids
 
-
         # Get sensor events for sensor IDS -------------------------------
 
         raw_sensor_events: list[ReadFirebaseNodeResultDTO] = []
@@ -58,9 +58,12 @@ class BuildSensorEventTimelineUseCase:
             for events in raw_sensor_events
         }
 
+        local_tz = ZoneInfo(request.local_timezone)
+
         events: list[SensorEvent] = self._build_sensor_events(
             sensor_ids=sensor_ids,
             events_by_sensor_id=events_by_sensor_id,
+            local_timezone=local_tz,
         )
 
         start_time: datetime
@@ -68,7 +71,12 @@ class BuildSensorEventTimelineUseCase:
         start_time, end_time = self._convert_date_to_datetime(
             start_date=request.start_date,
             end_date=request.end_date,
+            local_timezone=local_tz,
         )
+
+        print("**********")
+        print(start_time, end_time)
+        print("**********")
 
         time_period_events: list[SensorEvent] = (
             self._filter_events_by_time_period(
@@ -77,6 +85,7 @@ class BuildSensorEventTimelineUseCase:
                 end_time=end_time,
             ))
 
+        # collapsed events: local time from request
         collapsed_events: list[SensorEvent] = (
             self._collapse_consecutive_sensor_events(
                 time_period_events
@@ -92,6 +101,7 @@ class BuildSensorEventTimelineUseCase:
     def _build_sensor_events(
             sensor_ids: list[str],
             events_by_sensor_id: dict[str, Any],
+            local_timezone: ZoneInfo  #  str  # e.g. America / New_York
     ) -> list[SensorEvent]:
         events: list[SensorEvent] = []
 
@@ -100,19 +110,25 @@ class BuildSensorEventTimelineUseCase:
 
             for timestamps_state in events_by_day.values():
                 for timestamp_str, state in timestamps_state.items():
+                    activated_at_utc = datetime.strptime(
+                        timestamp_str,
+                        "%Y%m%d%H%M%S",
+                    ).replace(tzinfo=timezone.utc)
+
+                    activated_at_local = activated_at_utc.astimezone(
+                        local_timezone
+                    )
+
                     events.append(
                         SensorEvent(
                             sensor_id=sensor_id,
-                            activated_at=datetime.strptime(
-                                timestamp_str,
-                                "%Y%m%d%H%M%S",
-                            ),
+                            activated_at_utc=activated_at_utc,
+                            activated_at_local=activated_at_local,
                             sensor_state=state,
                         )
                     )
 
-        return sorted(events, key=lambda event: event.activated_at)
-
+        return sorted(events, key=lambda event: event.activated_at_utc)
 
     @staticmethod
     def _collapse_consecutive_sensor_events(
@@ -123,7 +139,7 @@ class BuildSensorEventTimelineUseCase:
 
         sorted_events = sorted(
             events,
-            key=lambda event: event.activated_at,
+            key=lambda event: event.activated_at_utc,
         )
 
         collapsed: list[SensorEvent] = []
@@ -147,9 +163,21 @@ class BuildSensorEventTimelineUseCase:
     def _convert_date_to_datetime(
             start_date: date,
             end_date: date,
+            local_timezone: ZoneInfo,
     ) -> tuple[datetime, datetime]:
-        start_time: datetime = datetime.combine(start_date, time.min)
-        end_time: datetime = datetime.combine(end_date, time.max)
+
+        start_time = datetime.combine(
+            start_date,
+            time.min,
+            tzinfo=local_timezone,
+        )
+
+        end_time = datetime.combine(
+            end_date,
+            time.max,
+            tzinfo=local_timezone,
+        )
+
         return start_time, end_time
 
     @staticmethod
@@ -161,5 +189,5 @@ class BuildSensorEventTimelineUseCase:
         return [
             event
             for event in events
-            if start_time <= event.activated_at <= end_time
+            if start_time <= event.activated_at_local <= end_time
         ]

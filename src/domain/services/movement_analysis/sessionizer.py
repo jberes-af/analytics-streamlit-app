@@ -17,13 +17,13 @@ class Sessionizer:
         if not events:
             return []
 
-        sorted_events = sorted(events, key=lambda event: event.activated_at)
+        sorted_events = sorted(events, key=lambda event: event.activated_at_utc)
 
         sessions: list[MovementSession] = []
         current_session: list[SensorEvent] = [sorted_events[0]]
 
         for previous, current in zip(sorted_events, sorted_events[1:]):
-            gap = current.activated_at - previous.activated_at
+            gap = current.activated_at_utc - previous.activated_at_utc
 
             if gap <= self._max_gap:
                 current_session.append(current)

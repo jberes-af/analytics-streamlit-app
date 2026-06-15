@@ -92,7 +92,7 @@ class AnalyzeMovementPatternsUseCase:
                     events.append(
                         SensorEvent(
                             sensor_id=sensor_id,
-                            activated_at=datetime.strptime(
+                            activated_at_utc=datetime.strptime(
                                 timestamp_str,
                                 "%Y%m%d%H%M%S",
                             ),
@@ -100,7 +100,7 @@ class AnalyzeMovementPatternsUseCase:
                         )
                     )
 
-        return sorted(events, key=lambda event: event.activated_at)
+        return sorted(events, key=lambda event: event.activated_at_utc)
 
     @staticmethod
     def _collapse_consecutive_sensor_events(
@@ -111,7 +111,7 @@ class AnalyzeMovementPatternsUseCase:
 
         sorted_events = sorted(
             events,
-            key=lambda event: event.activated_at,
+            key=lambda event: event.activated_at_utc,
         )
 
         collapsed: list[SensorEvent] = []

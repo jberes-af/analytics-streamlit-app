@@ -15,7 +15,7 @@ class ActivityDataFrameFactory:
         rows = [
             {
                 "sensor_id": event.sensor_id,
-                "timestamp": event.activated_at,
+                "timestamp": event.activated_at_utc,
                 "sensor_state": event.sensor_state,
             }
             for event in events

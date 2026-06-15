@@ -65,7 +65,7 @@ def handle_chart_outputs(
         start_date: date,
         end_date: date,
         statistics: list[SensorTimePeriodStatisticsDTO],
-
+        local_timezone: str,
 ) -> None:
     """
     _handle_weekly_activations_chart(
@@ -114,6 +114,7 @@ def handle_chart_outputs(
         start_date=start_date,
         end_date=end_date,
         tail_day_count=14,
+        local_timezone=local_timezone,
     )
 
     _handle_sensor_hourly_activation_bar_chart(
@@ -231,6 +232,7 @@ def _handle_sensor_activation_timestamp_scatter_chart(
         start_date: date,
         end_date: date,
         tail_day_count: int | None,
+        local_timezone: str,
 ) -> None:
     chart_vms: dict[str, ScatterChartVM] = (
         charts_presenter_service.present_sensor_activations_timestamp_scatter_chart(
@@ -238,8 +240,10 @@ def _handle_sensor_activation_timestamp_scatter_chart(
             sensor_events=sensor_events,
             start_date=start_date,
             end_date=end_date,
-            tail_day_count=tail_day_count
-        ))
+            tail_day_count=tail_day_count,
+            local_timezone=local_timezone,
+
+    ))
 
     chart_options: list[str] = list(chart_vms.keys())
 

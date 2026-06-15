@@ -71,7 +71,7 @@ class TimeBucketComparator:
                 continue
 
             # Uses the first event in the session to classify the session.
-            bucket_name = self._get_bucket(session.events[0].activated_at.time())
+            bucket_name = self._get_bucket(session.events[0].activated_at_utc.time())
             grouped[bucket_name].append(session)
 
         return grouped

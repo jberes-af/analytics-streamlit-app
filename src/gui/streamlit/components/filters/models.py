@@ -11,3 +11,4 @@ class AnalysisFilters:
     selected_sensor_ids: list[str]
     run_analysis: bool
     is_valid: bool
+    local_timezone: str

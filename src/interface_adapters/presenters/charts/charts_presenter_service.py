@@ -53,6 +53,7 @@ class ChartsPresenterService:
             start_date: date | None,
             end_date: date | None,
             tail_day_count: int | None,
+            local_timezone: str,
     ) -> dict[str, ScatterChartVM]:
         presenter = SensorActivityTimestampScatterChartPresenter()
 
@@ -62,6 +63,7 @@ class ChartsPresenterService:
             start_date=start_date,
             end_date=end_date,
             tail_day_count=tail_day_count,
+            local_timezone=local_timezone,
         )
 
     @staticmethod
