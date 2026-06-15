@@ -79,15 +79,23 @@ class PlotlyScatterLineChartRenderer:
         fig.update_yaxes(showgrid=self.show_grid)
 
         fig.update_layout(
+            title="",
             showlegend=True,
             legend=dict(
                 orientation="h",
+                x=0,
+                xanchor="left",
+                y=1.05,
                 yanchor="bottom",
-                y=1.02,
-                xanchor="center",
-                x=0.5,
                 font=dict(size=16),
             ),
+            margin=dict(
+                l=60,
+                r=20,
+                t=70,
+                b=80,
+            ),
+            height=520,
         )
 
         step = 7
@@ -108,5 +116,14 @@ class PlotlyScatterLineChartRenderer:
                 ticktext=tick_labels[::step],
                 tickangle=0,
             )
+
+        fig.update_layout(
+            xaxis=dict(
+                tickfont=dict(size=16),
+            ),
+            yaxis=dict(
+                tickfont=dict(size=16),
+            ),
+        )
 
         return fig

@@ -147,6 +147,10 @@ def _handle_daily_activations_chart(
     # st.write("Selected:", selected_chart)
     selected_vm = chart_vms[selected_chart]
 
+    # st.subheader(selected_vm.title)
+    # st.subheader(selected_vm.title)
+    st.markdown(f"##### {selected_vm.title}")
+
     try:
         fig = scatter_line_chart_plotter.render(selected_vm)
         # fig = line_chart_plotter.render(selected_vm)
@@ -156,6 +160,10 @@ def _handle_daily_activations_chart(
             width="stretch",
             # key=f"daily_activations_chart_{selected_chart}",
             key=f"daily_activations_chart",
+            config={
+                "displayModeBar": False,
+                "responsive": True,
+            },
         )
 
     except Exception as e:
