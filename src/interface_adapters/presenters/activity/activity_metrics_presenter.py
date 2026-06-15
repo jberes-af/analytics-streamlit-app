@@ -60,7 +60,7 @@ class ActivityAnalysisMetricsPresenter:
             [
                 result.daily_activity,
                 result.combined_sensor_activity,
-                result.hourly_activity,
+                result.all_sensors_by_hour_activity,
                 result.rolling_activity,
                 result.peak_activity,
                 result.inactivity_periods,
@@ -75,7 +75,7 @@ class ActivityAnalysisMetricsPresenter:
             self._present_sensor_activity(result.combined_sensor_activity))
 
         hourly_activity: HourlyActivityViewModel = (
-            self._present_hourly_activity(result.hourly_activity))
+            self._present_hourly_activity(result.all_sensors_by_hour_activity))
 
         rolling_activity: RollingActivityViewModel = (
             self._present_rolling_activity(result.rolling_activity))

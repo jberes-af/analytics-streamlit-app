@@ -1,6 +1,6 @@
 # /src/infrastructure/services/analysis/pandas/activity/daily_activity_calculator.py
 
-from src.application.dto.activity_metric_dtos import DailyActivityDTO
+from src.application.dto.activity_metric_dtos import FirstLastDailyActivityDTO
 
 import pandas as pd
 
@@ -11,7 +11,7 @@ class DailyActivityCalculator:
     def calculate_date_time(
             self,
             df: pd.DataFrame,
-    ) -> list[DailyActivityDTO]:
+    ) -> list[FirstLastDailyActivityDTO]:
         if df.empty:
             return []
 
@@ -32,13 +32,13 @@ class DailyActivityCalculator:
             .reset_index()
         )
 
-        results: list[DailyActivityDTO] = []
+        results: list[FirstLastDailyActivityDTO] = []
 
         for row in grouped.itertuples(index=False):
             active_day_length = row.last_activation - row.first_activation
 
             results.append(
-                DailyActivityDTO(
+                FirstLastDailyActivityDTO(
                     date=row.date,
                     total_activations=int(row.total_activations),
                     first_activation=row.first_activation.to_pydatetime(),

@@ -3,9 +3,9 @@
 from datetime import date
 
 from src.application.dto.activity_metric_dtos import (
-    CombinedSensorActivityDTO,
-    SensorByIdByDateActivityDTO,
-    SensorAllByDateActivityDTO,
+    SensorActivityPercentOfTotalDTO,
+    DailyActivityBySensorIdDTO,
+    DailyActivityAllSensorsDTO,
     # SensorActivityByDateByTimePeriodDTO,
 )
 
@@ -17,7 +17,7 @@ class SensorActivityCalculator:
     @staticmethod
     def calculate_total_activity(
             df: pd.DataFrame,
-    ) -> list[CombinedSensorActivityDTO]:
+    ) -> list[SensorActivityPercentOfTotalDTO]:
         total_count = len(df)
 
         grouped = (
@@ -27,13 +27,13 @@ class SensorActivityCalculator:
             .reset_index()
         )
 
-        results: list[CombinedSensorActivityDTO] = []
+        results: list[SensorActivityPercentOfTotalDTO] = []
 
         for row in grouped.itertuples(index=False):
             count = int(row.total_activations)
 
             results.append(
-                CombinedSensorActivityDTO(
+                SensorActivityPercentOfTotalDTO(
                     sensor_id=row.sensor_id,
                     total_activations=count,
                     percentage_of_total=count / total_count if total_count else 0.0,
@@ -48,7 +48,7 @@ class SensorActivityCalculator:
             start_date: date,
             end_date: date,
             rolling_window_days: int = 7,
-    ) -> list[SensorByIdByDateActivityDTO]:
+    ) -> list[DailyActivityBySensorIdDTO]:
 
         required_columns: set[str] = {"date", "sensor_id"}
 
@@ -122,14 +122,8 @@ class SensorActivityCalculator:
             )
         )
 
-        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-        print()
-        print(grouped)
-        print()
-        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-
         return [
-            SensorByIdByDateActivityDTO(
+            DailyActivityBySensorIdDTO(
                 date=row.date,
                 sensor_id=row.sensor_id,
                 activation_count=int(row.activation_count),
@@ -144,13 +138,13 @@ class SensorActivityCalculator:
             start_date: date,
             end_date: date,
             rolling_window_days: int = 7,
-    ) -> list[SensorAllByDateActivityDTO]:
+    ) -> list[DailyActivityAllSensorsDTO]:
 
         required_columns: set[str] = {"date"}
 
         if df.empty:
             return [
-                SensorAllByDateActivityDTO(
+                DailyActivityAllSensorsDTO(
                     date=current_date.date(),
                     activation_count=0,
                     rolling_average=0.0,
@@ -200,7 +194,7 @@ class SensorActivityCalculator:
         )
 
         return [
-            SensorAllByDateActivityDTO(
+            DailyActivityAllSensorsDTO(
                 date=row.date,
                 activation_count=int(row.activation_count),
                 rolling_average=float(row.rolling_average),

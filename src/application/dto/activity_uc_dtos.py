@@ -7,14 +7,15 @@ from src.domain.entities.sensor import SensorEvent
 
 from src.application.dto.activity_metric_dtos import (
     ActivityDistributionDTO,
-    DailyActivityDTO,
-    HourlyActivityDTO,
+    FirstLastDailyActivityDTO,
+    HourlyActivityAllSensorsDTO,
+    HourlyActivityBySensorIdDTO,
     InactivityPeriodDTO,
     PeakActivityDTO,
     RollingActivityDTO,
-    CombinedSensorActivityDTO,
-    SensorByIdByDateActivityDTO,
-    SensorAllByDateActivityDTO,
+    SensorActivityPercentOfTotalDTO,
+    DailyActivityBySensorIdDTO,
+    DailyActivityAllSensorsDTO,
     ActivityTrendDTO,
     SensorWeeklyActivityDTO,
     SensorTimePeriodStatisticsDTO,
@@ -38,11 +39,15 @@ class ActivityAnalysisResultDTO:
     start_date: date
     end_date: date
 
-    daily_activity: list[DailyActivityDTO]
-    combined_sensor_activity: list[CombinedSensorActivityDTO]
-    sensor_by_id_by_date_activity: list[SensorByIdByDateActivityDTO]
-    all_sensors_by_date_activity: list[SensorAllByDateActivityDTO]
-    hourly_activity: list[HourlyActivityDTO]
+    daily_activity: list[FirstLastDailyActivityDTO]
+    combined_sensor_activity: list[SensorActivityPercentOfTotalDTO]
+
+    sensor_by_id_by_date_activity: list[DailyActivityBySensorIdDTO]
+    all_sensors_by_date_activity: list[DailyActivityAllSensorsDTO]
+
+    sensor_by_id_by_hour_activity: list[HourlyActivityBySensorIdDTO]
+    all_sensors_by_hour_activity: list[HourlyActivityAllSensorsDTO]
+
     rolling_activity: list[RollingActivityDTO]
     peak_activity: list[PeakActivityDTO]
     inactivity_periods: list[InactivityPeriodDTO]

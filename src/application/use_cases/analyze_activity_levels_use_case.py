@@ -38,9 +38,13 @@ class AnalyzeActivityLevelsUseCase:
             end_date=request.end_time,
             daily_activity=result.daily_activity,
             combined_sensor_activity=result.combined_sensor_activity,
+
             sensor_by_id_by_date_activity=result.sensor_by_id_by_date_activity,
             all_sensors_by_date_activity=result.all_sensors_by_date_activity,
-            hourly_activity=result.hourly_activity,
+
+            sensor_by_id_by_hour_activity=result.sensor_by_id_by_hour_activity,
+            all_sensors_by_hour_activity=result.all_sensors_by_hour_activity,
+
             rolling_activity=result.rolling_activity,
             peak_activity=result.peak_activity,
             inactivity_periods=result.inactivity_periods,

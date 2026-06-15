@@ -10,8 +10,9 @@ from src.gui.streamlit.components.filters.sensor_selector import (
     render_sensor_selector,
 )
 
-from src.gui.streamlit.components.filters.models import (AnalysisFilters,
-                                                         )
+from src.gui.streamlit.components.filters.models import (
+    AnalysisFilters,
+)
 
 
 def render_desktop_filter_panel(
@@ -19,7 +20,6 @@ def render_desktop_filter_panel(
         sensor_names: list[str],
 ) -> AnalysisFilters:
     with st.sidebar:
-
         st.divider()
 
         run_analysis = st.button(

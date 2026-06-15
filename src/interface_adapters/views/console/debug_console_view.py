@@ -4,8 +4,8 @@ from datetime import date
 
 from src.application.dto.activity_metric_dtos import (
     ActivityTrendDTO,
-    CombinedSensorActivityDTO,
-    SensorByIdByDateActivityDTO,
+    SensorActivityPercentOfTotalDTO,
+    DailyActivityBySensorIdDTO,
 )
 
 from src.interface_adapters.view_models.shared_view_model import RunConfigViewModel
@@ -64,8 +64,8 @@ class DebugConsoleView:
     @staticmethod
     def render_sensor_summary_result(
             sensor_ids: list[str],
-            combined_sensor_activity: list[CombinedSensorActivityDTO],
-            sensor_by_id_activity: list[SensorByIdByDateActivityDTO],
+            combined_sensor_activity: list[SensorActivityPercentOfTotalDTO],
+            sensor_by_id_activity: list[DailyActivityBySensorIdDTO],
             start_date: date,
             end_date: date,
     ) -> None:

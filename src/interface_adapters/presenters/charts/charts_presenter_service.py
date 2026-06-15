@@ -6,9 +6,10 @@ from typing import Sequence
 from src.domain.entities.sensor import SensorEvent
 
 from src.application.dto.activity_uc_dtos import (
-    HourlyActivityDTO,
-    SensorByIdByDateActivityDTO,
-    SensorAllByDateActivityDTO,
+    DailyActivityBySensorIdDTO,
+    DailyActivityAllSensorsDTO,
+    HourlyActivityAllSensorsDTO,
+    HourlyActivityBySensorIdDTO,
 )
 
 from src.interface_adapters.view_models.charts_view_model import (
@@ -24,7 +25,7 @@ from src.interface_adapters.presenters.charts.sensor_chart_presenter import (
 )
 
 from src.interface_adapters.presenters.charts.hourly_chart_presenter import (
-    HourlyActivityAllSensorsBarChartPresenter,
+    HourlyActivityBarChartPresenter,
 )
 from src.interface_adapters.presenters.charts.timestamp_dot_chart_presenter import \
     SensorActivityTimestampScatterChartPresenter
@@ -35,8 +36,8 @@ class ChartsPresenterService:
     @staticmethod
     def present_sensor_activations_by_date_chart(
             sensor_ids: list[str],
-            sensor_by_id_events: list[SensorByIdByDateActivityDTO],
-            all_sensor_events: list[SensorAllByDateActivityDTO],
+            sensor_by_id_events: list[DailyActivityBySensorIdDTO],
+            all_sensor_events: list[DailyActivityAllSensorsDTO],
     ) -> dict[str, ScatterLineChartVM]:  # dict[str, LineChartVM]:
         presenter = SensorActivityByDateChartPresenter()
         return presenter.present_sensor_activations_by_date_chart(
@@ -65,17 +66,19 @@ class ChartsPresenterService:
 
     @staticmethod
     def present_hourly_activations_bar_chart(
-            # sensor_ids: list[str],
-            hourly_activity: list[HourlyActivityDTO],
+            sensor_ids: list[str],
+            hourly_activity_all_sensors: list[HourlyActivityAllSensorsDTO],
+            hourly_activity_by_sensor_id: list[HourlyActivityBySensorIdDTO],
             # start_date: date | None,
             end_date: date | None,
             tail_day_count: int | None,
-    ) -> BarChartVM:  # dict[str, BarChartVM]:
-
-        presenter = HourlyActivityAllSensorsBarChartPresenter()
+    ) -> dict[str, BarChartVM]:
+        presenter = HourlyActivityBarChartPresenter()
 
         return presenter.present_hourly_chart(
             end_date=end_date,
             tail_day_count=tail_day_count,
-            hourly_activity=hourly_activity,
+            sensor_ids=sensor_ids,
+            hourly_activity_all_sensors=hourly_activity_all_sensors,
+            hourly_activity_by_sensor_id=hourly_activity_by_sensor_id,
         )

@@ -5,8 +5,8 @@ from datetime import date
 from typing import Sequence
 
 from src.application.dto.activity_uc_dtos import (
-    SensorByIdByDateActivityDTO,
-    SensorAllByDateActivityDTO,
+    DailyActivityBySensorIdDTO,
+    DailyActivityAllSensorsDTO,
 )
 
 from src.interface_adapters.view_models.charts_view_model import (
@@ -24,8 +24,8 @@ class SensorActivityByDateChartPresenter:
     def present_sensor_activations_by_date_chart(
             self,
             sensor_ids: list[str],
-            sensor_by_id_events: list[SensorByIdByDateActivityDTO],
-            all_sensor_events: list[SensorAllByDateActivityDTO],
+            sensor_by_id_events: list[DailyActivityBySensorIdDTO],
+            all_sensor_events: list[DailyActivityAllSensorsDTO],
     ) -> dict[str, ScatterLineChartVM]:  # dict[str, LineChartVM]:
 
         # result: dict[str, LineChartVM] = {}
@@ -33,7 +33,7 @@ class SensorActivityByDateChartPresenter:
 
         # --- ALL SENSORS FIRST
 
-        all_sorted_by_date: list[SensorAllByDateActivityDTO] = sorted(
+        all_sorted_by_date: list[DailyActivityAllSensorsDTO] = sorted(
             all_sensor_events,
             key=lambda event: event.date,
         )
@@ -56,19 +56,19 @@ class SensorActivityByDateChartPresenter:
 
         # --- INDIVIDUAL SENSORS
 
-        events_mapping: dict[str, list[SensorByIdByDateActivityDTO]] = {}
+        events_mapping: dict[str, list[DailyActivityBySensorIdDTO]] = {}
 
         for event in sensor_by_id_events:
             events_mapping.setdefault(event.sensor_id, []).append(event)
 
         for sensor_id in sensor_ids:
-            values: list[SensorByIdByDateActivityDTO] = (
+            values: list[DailyActivityBySensorIdDTO] = (
                 events_mapping.get(sensor_id, []))
 
             if not values:
                 continue
 
-            sorted_by_date: list[SensorByIdByDateActivityDTO] = sorted(
+            sorted_by_date: list[DailyActivityBySensorIdDTO] = sorted(
                 values,
                 key=lambda event: event.date,
             )

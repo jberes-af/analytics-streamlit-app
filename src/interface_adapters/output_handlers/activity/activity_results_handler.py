@@ -8,12 +8,12 @@ from src.domain.entities.sensor import SensorEvent
 
 from src.application.dto.activity_metric_dtos import (
     ActivityTrendDTO,
-    CombinedSensorActivityDTO,
+    SensorActivityPercentOfTotalDTO,
     SensorTimePeriodStatisticsDTO,
 )
 
 from src.application.dto.activity_uc_dtos import (
-    SensorByIdByDateActivityDTO,
+    DailyActivityBySensorIdDTO,
     ActivityAnalysisResultDTO,
 )
 
@@ -178,12 +178,12 @@ def _handle_sensor_activity_time_period_statistics(
 
 def _handle_sensor_summary_outputs(
         sensor_ids: list[str],
-        combined_sensor_activity: list[CombinedSensorActivityDTO],
-        sensor_by_id_activity: list[SensorByIdByDateActivityDTO],
+        combined_sensor_activity: list[SensorActivityPercentOfTotalDTO],
+        sensor_by_id_activity: list[DailyActivityBySensorIdDTO],
         start_date: date,
         end_date: date,
 ):
-    id_to_record_by_date: dict[str, SensorByIdByDateActivityDTO] = {
+    id_to_record_by_date: dict[str, DailyActivityBySensorIdDTO] = {
         record.sensor_id: record
         for record in sensor_by_id_activity
     }

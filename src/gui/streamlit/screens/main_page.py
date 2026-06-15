@@ -55,7 +55,15 @@ def render_main_page(
         st.warning("Please select a valid date range and at least one sensor.")
         return
 
-    if filters.run_analysis:
+    run_analysis_mobile = st.button(
+        "Run Analysis",
+        type="primary",
+        # width="stretch",
+        # use_container_width=True,
+        key="mobile_run_analysis",
+    )
+
+    if filters.run_analysis or run_analysis_mobile:
         analysis_request = RunAnalysisUseCasesRequestDTO(
             sensor_ids=filters.selected_sensor_ids,
             start_date=filters.start_date,
@@ -88,16 +96,20 @@ def render_main_page(
     # must call chart-outputs object from here in order to render on main-page
 
     handle_chart_outputs(
-        # sensor_events=analysis_result.build_sensor_timeline_result.collapsed_events,
+        sensor_events=analysis_result.build_sensor_timeline_result.collapsed_events,
         sensor_ids=filters.selected_sensor_ids,
-        sensor_events_sum_by_id_by_date=analysis_result.analyze_activity_result.sensor_by_id_by_date_activity,
-        all_sensor_events_sum_by_id_by_date=analysis_result.analyze_activity_result.all_sensors_by_date_activity,
-        # hourly_activity_results=analysis_result.activity_result.hourly_activity,
+        daily_activity_by_sensor_id=analysis_result.analyze_activity_result.sensor_by_id_by_date_activity,
+        daily_activity_all_sensors=analysis_result.analyze_activity_result.all_sensors_by_date_activity,
+
+        hourly_activity_all_sensors=analysis_result.analyze_activity_result.all_sensors_by_hour_activity,
+        hourly_activity_by_sensor_id=analysis_result.analyze_activity_result.sensor_by_id_by_hour_activity,
+
         charts_presenter_service=analysis_app.charts_presenter_service,
-        # bar_chart_plotter=analysis_app.bar_chart_plotter,
+        bar_vertical_chart_plotter=analysis_app.bar_vertical_chart_plotter,
+        bar_horiz_chart_plotter=analysis_app.bar_horizontal_chart_plotter,
         line_chart_plotter=analysis_app.line_chart_renderer,
         scatter_line_chart_plotter=analysis_app.scatter_line_chart_renderer,
-        # scatter_chart_plotter=analysis_app.scatter_chart_plotter,
+        scatter_chart_plotter=analysis_app.scatter_chart_plotter,
         start_date=filters.start_date,
         end_date=filters.end_date,
         statistics=analysis_result.analyze_activity_result.sensor_time_period_statistics

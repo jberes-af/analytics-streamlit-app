@@ -105,7 +105,8 @@ class PandasActivityMetricsCalculator(ActivityMetricsCalculatorPort):
                 combined_sensor_activity=[],
                 sensor_by_id_by_date_activity=[],
                 all_sensors_by_date_activity=[],
-                hourly_activity=[],
+                sensor_by_id_by_hour_activity=[],
+                all_sensors_by_hour_activity=[],
                 rolling_activity=[],
                 peak_activity=[],
                 inactivity_periods=[],
@@ -128,36 +129,62 @@ class PandasActivityMetricsCalculator(ActivityMetricsCalculatorPort):
         return ActivityMetricsCalculatorResultDTO(
             # user_id=user_id,
             start_date=start_time.date(),
+
             end_date=end_time.date(),
+
             daily_activity=(
-                self.daily_calculator.calculate_date_time(df)),
+                self.daily_calculator.calculate_date_time(df)
+            ),
+
             combined_sensor_activity=(
-                self.sensor_calculator.calculate_total_activity(df)),
+                self.sensor_calculator.calculate_total_activity(df)
+            ),
+
             sensor_by_id_by_date_activity=(
                 self.sensor_calculator.calculate_sensor_activity_by_id_by_date(
                     df=df,
                     start_date=start_time.date(),
                     end_date=end_time.date(),
                 )),
+
             all_sensors_by_date_activity=(
                 self.sensor_calculator.calculate_all_sensors_by_date(
                     df=df,
                     start_date=start_time.date(),
                     end_date=end_time.date(),
                 )),
-            hourly_activity=(
-                self.hourly_calculator.calculate_by_date_by_hour(df)),
+
+            sensor_by_id_by_hour_activity=(
+                self.hourly_calculator.calculate_hourly_by_sensor_id(df)
+            ),
+
+            all_sensors_by_hour_activity=(
+                self.hourly_calculator.calculate_hourly_all_sensors(df)
+            ),
+
+
             rolling_activity=(
-                self.rolling_calculator.calculate_by_frequency(df)),
+                self.rolling_calculator.calculate_by_frequency(df)
+            ),
+
             peak_activity=(
-                self.peak_calculator.calculate_by_rolling_window(df)),
+                self.peak_calculator.calculate_by_rolling_window(df)
+            ),
+
             inactivity_periods=(
-                self.inactivity_calculator.calculate_by_timestamp(df)),
+                self.inactivity_calculator.calculate_by_timestamp(df)
+            ),
+
             activity_distribution=(
-                self.distribution_calculator.calculate_by_hour(df)),
+                self.distribution_calculator.calculate_by_hour(df)
+            ),
+
             activity_trends_by_sensor_id=activity_trends_by_sensor,
+
             weekly_activity_by_sensor_id=(
-                self.weekly_activity_calculator.calculate_from_daily_counts(df)),
+                self.weekly_activity_calculator.calculate_from_daily_counts(df)
+            ),
+
             time_period_statistics_by_sensor_id=(
                 self.time_period_statistics_calculator.calculate(
                     df=df,

@@ -5,7 +5,7 @@ from datetime import datetime, date, timedelta
 
 
 @dataclass
-class DailyActivityDTO:
+class FirstLastDailyActivityDTO:
     date: date
     total_activations: int
     first_activation: datetime | None
@@ -15,14 +15,14 @@ class DailyActivityDTO:
 
 
 @dataclass
-class CombinedSensorActivityDTO:
+class SensorActivityPercentOfTotalDTO:
     sensor_id: str
     total_activations: int
     percentage_of_total: float
 
 
 @dataclass(frozen=True)
-class SensorByIdByDateActivityDTO:
+class DailyActivityBySensorIdDTO:
     date: date
     sensor_id: str
     activation_count: int
@@ -30,7 +30,7 @@ class SensorByIdByDateActivityDTO:
 
 
 @dataclass(frozen=True)
-class SensorAllByDateActivityDTO:
+class DailyActivityAllSensorsDTO:
     date: date
     activation_count: int
     rolling_average: float
@@ -45,9 +45,16 @@ class SensorActivityByDateByTimePeriodDTO:
     activation_count: int
 """
 
+@dataclass
+class HourlyActivityBySensorIdDTO:
+    sensor_id: str
+    date: date
+    hour: int
+    activation_count: int
+
 
 @dataclass
-class HourlyActivityDTO:
+class HourlyActivityAllSensorsDTO:
     date: date
     hour: int
     activation_count: int
@@ -135,11 +142,15 @@ class ActivityMetricsCalculatorResultDTO:
     # user_id: str
     start_date: date
     end_date: date
-    daily_activity: list[DailyActivityDTO]
-    combined_sensor_activity: list[CombinedSensorActivityDTO]
-    sensor_by_id_by_date_activity: list[SensorByIdByDateActivityDTO]
-    all_sensors_by_date_activity: list[SensorAllByDateActivityDTO]
-    hourly_activity: list[HourlyActivityDTO]
+    daily_activity: list[FirstLastDailyActivityDTO]
+    combined_sensor_activity: list[SensorActivityPercentOfTotalDTO]
+
+    sensor_by_id_by_date_activity: list[DailyActivityBySensorIdDTO]
+    all_sensors_by_date_activity: list[DailyActivityAllSensorsDTO]
+
+    sensor_by_id_by_hour_activity: list[HourlyActivityBySensorIdDTO]
+    all_sensors_by_hour_activity: list[HourlyActivityAllSensorsDTO]
+
     rolling_activity: list[RollingActivityDTO]
     peak_activity: list[PeakActivityDTO]
     inactivity_periods: list[InactivityPeriodDTO]
