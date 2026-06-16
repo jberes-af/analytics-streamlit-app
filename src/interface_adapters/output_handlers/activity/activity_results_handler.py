@@ -10,6 +10,7 @@ from src.application.dto.activity_metric_dtos import (
     ActivityTrendDTO,
     SensorActivityPercentOfTotalDTO,
     SensorTimePeriodStatisticsDTO,
+    SensorWeeklyActivityDTO,
 )
 
 from src.application.dto.activity_uc_dtos import (
@@ -70,7 +71,7 @@ def handle_result_outputs_activity(
     )
 
     _handle_weekly_activity_outputs(
-        activity_metrics_result=activity_metrics_result,
+        weekly_sensor_activity=activity_metrics_result.weekly_sensor_activity,
         presenter_service=activity_presenter_service,
         console_view_service=console_view_service,
     )
@@ -121,12 +122,12 @@ def _handle_activity_metrics_outputs(
 
 
 def _handle_weekly_activity_outputs(
-        activity_metrics_result: ActivityAnalysisResultDTO,
+        weekly_sensor_activity: list[SensorWeeklyActivityDTO],
         presenter_service: ActivityPresenterService,
         console_view_service: ConsoleViewService,
 ):
     vm = presenter_service.present_weekly_activity(
-        result=activity_metrics_result,
+        weekly_sensor_activity=weekly_sensor_activity,
     )
 
     console_view_service.render_weekly_activity_view(vm)

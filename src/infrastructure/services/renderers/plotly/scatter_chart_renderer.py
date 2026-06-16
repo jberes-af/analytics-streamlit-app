@@ -48,7 +48,7 @@ class PlotlyScatterChartRenderer:
             )
 
         fig.update_layout(
-            title=None,
+            title="",
             height=self.height,
             showlegend=len(chart_vm.series) > 1,
             margin={

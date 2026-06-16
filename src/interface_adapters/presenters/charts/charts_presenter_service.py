@@ -10,6 +10,7 @@ from src.application.dto.activity_uc_dtos import (
     DailyActivityAllSensorsDTO,
     HourlyActivityAllSensorsDTO,
     HourlyActivityBySensorIdDTO,
+    SensorWeeklyActivityDTO,
 )
 
 from src.interface_adapters.view_models.charts_view_model import (
@@ -18,10 +19,15 @@ from src.interface_adapters.view_models.charts_view_model import (
     LineChartVM,
     ScatterChartVM,
     ScatterLineChartVM,
+    ScatterLineChartWeeklyVM,
 )
 
-from src.interface_adapters.presenters.charts.sensor_chart_presenter import (
+from src.interface_adapters.presenters.charts.daily_sensor_chart_presenter import (
     SensorActivityByDateChartPresenter,
+)
+
+from src.interface_adapters.presenters.charts.weekly_sensor_chart_presenter import (
+    SensorActivityByWeekChartPresenter,
 )
 
 from src.interface_adapters.presenters.charts.hourly_chart_presenter import (
@@ -32,6 +38,17 @@ from src.interface_adapters.presenters.charts.timestamp_dot_chart_presenter impo
 
 
 class ChartsPresenterService:
+
+    @staticmethod
+    def present_sensor_activations_by_week_chart(
+            sensor_ids: list[str],
+            weekly_sensor_activity: list[SensorWeeklyActivityDTO],
+    ) -> dict[str, ScatterLineChartWeeklyVM]:
+        presenter = SensorActivityByWeekChartPresenter()
+        return presenter.present_sensor_activations_by_week_chart(
+            sensor_ids=sensor_ids,
+            weekly_sensor_activity=weekly_sensor_activity,
+        )
 
     @staticmethod
     def present_sensor_activations_by_date_chart(

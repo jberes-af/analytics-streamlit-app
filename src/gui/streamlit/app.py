@@ -35,7 +35,7 @@ from src.infrastructure.config.settings_model import Settings
 from src.infrastructure.config.app_config_models import AppRuntimeConfig
 
 from src.main.composition_root_startup import StartupAppContainer
-from src.main.composition_root_analysis import AnalysisAppContainer
+from src.main.composition_root_analytics import AnalysisAppContainer
 from src.main.composition_root import (
     StreamlitDependencies,
     load_runtime_config,
@@ -172,7 +172,7 @@ def run_streamlit_app() -> None:
         app_containers.startup_app_container)
 
     analysis_app_container: AnalysisAppContainer = (
-        app_containers.analysis_app_container)
+        app_containers.analytics_app_container)
 
     if settings.app_mode == AppMode.PRODUCTION:
         if not st.session_state["logged_in"]:

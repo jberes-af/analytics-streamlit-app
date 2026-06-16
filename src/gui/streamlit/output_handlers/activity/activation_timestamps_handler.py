@@ -1,4 +1,4 @@
-# # /src/gui/streamlit/output_handlers/activity_charts_handler.py
+# # /src/gui/streamlit/output_handlers/activity_charts_handler-00.txt
 
 from datetime import date
 

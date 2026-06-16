@@ -84,3 +84,17 @@ class ScatterLineChartVM:
     line_series: Sequence[SeriesVM]
     x_tick_coords: Sequence[int | float] | None = None
     y_tick_coords: Sequence[int | float] | None = None
+
+
+@dataclass(frozen=True)
+class ScatterLineChartWeeklyVM:
+    title: str
+    x_axis_label: str
+    y_axis_label: str
+    x_tick_labels: Sequence[str] | None
+    y_tick_labels: Sequence[str] | None
+    scatter_series_min: Sequence[SeriesVM]
+    scatter_series_max: Sequence[SeriesVM]
+    line_series: Sequence[SeriesVM]
+    x_tick_coords: Sequence[int | float] | None = None
+    y_tick_coords: Sequence[int | float] | None = None

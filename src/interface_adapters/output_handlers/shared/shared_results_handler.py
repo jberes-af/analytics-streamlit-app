@@ -16,8 +16,8 @@ from src.application.dto.sensor_timeline_uc_dtos import (
 )
 """
 
-from src.application.dto.run_analysis_use_cases_dtos import (
-    RunAnalysisUseCasesRequestDTO,
+from src.application.dto.run_analytics_use_cases_dtos import (
+    RunAnalyticsUseCasesRequestDTO,
 )
 
 # --- INTERFACE ADAPTERS
@@ -36,7 +36,7 @@ from src.interface_adapters.views.console.console_view_service import (
 
 
 def handle_result_outputs_shared(
-        run_analysis_request: RunAnalysisUseCasesRequestDTO,
+        run_analysis_request: RunAnalyticsUseCasesRequestDTO,
         sensor_ids: list[str],
         # sensor_profiles: list[SensorProfile],
         # sensor_events: list[SensorEvent],

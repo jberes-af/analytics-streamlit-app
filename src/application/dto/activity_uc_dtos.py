@@ -58,4 +58,5 @@ class ActivityAnalysisResultDTO:
     activity_trend_all_sensors: list[ActivityTrendDTO]
 
     weekly_sensor_activity: list[SensorWeeklyActivityDTO]
+
     sensor_time_period_statistics: list[SensorTimePeriodStatisticsDTO]

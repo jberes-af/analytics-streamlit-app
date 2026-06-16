@@ -35,7 +35,7 @@ from src.application.services.activity.analyze_metrics_service import (
 )
 
 from src.application.use_cases.use_cases_interactor import (
-    RunAnalysisUseCasesInteractor,
+    RunAnalyticsUseCasesInteractor,
     BuildSensorEventTimelineInteractor,
     AnalyzeMovementPatternsInteractor,
     AnalyzeActivityLevelsInteractor,
@@ -141,8 +141,8 @@ from src.infrastructure.services.renderers.console.movements_console_renderer im
 
 # --- INTERFACE ADAPTERS
 
-from src.interface_adapters.controllers.analysis_controller import (
-    RunAnalysisUseCasesController,
+from src.interface_adapters.controllers.analytics_controller import (
+    RunAnalyticsUseCasesController,
 )
 
 from src.interface_adapters.presenters.activity.activity_metrics_presenter import (
@@ -191,7 +191,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class AppContainer:
-    run_controller: RunAnalysisUseCasesController
+    run_controller: RunAnalyticsUseCasesController
 
     activity_presenter_service: ActivityPresenterService
     # activity_metrics_presenter: ActivityAnalysisMetricsPresenter
@@ -237,7 +237,7 @@ def build_analysis_app_container(
         ))
 
 
-    run_all_use_cases: RunAnalysisUseCasesInteractor = RunAnalysisUseCasesInteractor(
+    run_all_use_cases: RunAnalyticsUseCasesInteractor = RunAnalyticsUseCasesInteractor(
         analyze_movements_use_case=analyze_movements_uc,
         analyze_activity_use_case=analyze_activity_uc,
         build_sensor_event_timeline_use_case=build_sensor_timeline_uc,
@@ -247,7 +247,7 @@ def build_analysis_app_container(
 
     # --- CONTROLLER
 
-    run_controller: RunAnalysisUseCasesController = _build_controller(
+    run_controller: RunAnalyticsUseCasesController = _build_controller(
         run_all_use_cases=run_all_use_cases,
     )
 
@@ -287,7 +287,7 @@ BUILD CONTROLLER
 
 def _build_controller(
         *,
-        run_all_use_cases: RunAnalysisUseCasesInteractor,
+        run_all_use_cases: RunAnalyticsUseCasesInteractor,
 ) -> RunSensorConnectivityController:
     return RunSensorConnectivityController(
         run_sensor_connectivity__cases=run_sensor_connectivity_use_cases,

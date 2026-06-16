@@ -55,7 +55,7 @@ from src.main.composition_root_startup import (
     build_startup_app_container,
 )
 
-from src.main.composition_root_analysis import (
+from src.main.composition_root_analytics import (
     AnalysisAppContainer,
     build_analysis_app_container,
 )
@@ -64,7 +64,7 @@ from src.main.composition_root_analysis import (
 @dataclass(frozen=True)
 class StreamlitDependencies:
     startup_app_container: StartupAppContainer
-    analysis_app_container: AnalysisAppContainer
+    analytics_app_container: AnalysisAppContainer
 
 
 def resolve_project_root() -> Path:
@@ -129,8 +129,7 @@ def build_app_containers(
 
     return StreamlitDependencies(
         startup_app_container=startup_app_container,
-        analysis_app_container=analysis_app_container,
-
+        analytics_app_container=analysis_app_container,
     )
 
 

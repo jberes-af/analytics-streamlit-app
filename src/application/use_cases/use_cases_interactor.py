@@ -8,9 +8,9 @@ from src.application.dto.run_startup_use_cases_dtos import (
     RunStartupUseCasesResultDTO,
 )
 
-from src.application.dto.run_analysis_use_cases_dtos import (
-    RunAnalysisUseCasesRequestDTO,
-    RunAnalysisUseCasesResultDTO,
+from src.application.dto.run_analytics_use_cases_dtos import (
+    RunAnalyticsUseCasesRequestDTO,
+    RunAnalyticsUseCasesResultDTO,
 )
 
 from src.application.dto.sensor_by_user_uc_dtos import (
@@ -35,9 +35,18 @@ from src.application.dto.activity_uc_dtos import (
     ActivityAnalysisResultDTO,
 )
 
+from src.application.dto.insights_uc_dtos import (
+    GenerateInsightsRequestDTO,
+    GenerateInsightsResultDTO,
+)
+
 import logging
 
 logger = logging.getLogger(__name__)
+
+"""
+USE CASE INTERACTOR
+"""
 
 
 class LookupSensorByUserInteractor(Protocol):
@@ -71,6 +80,14 @@ class AnalyzeActivityLevelsInteractor(Protocol):
             self,
             request: ActivityAnalysisRequestDTO,
     ) -> ActivityAnalysisResultDTO:
+        ...
+
+
+class GenerateInsightsInteractor(Protocol):
+    def execute(
+            self,
+            request: GenerateInsightsRequestDTO,
+    ) -> GenerateInsightsResultDTO:
         ...
 
 
@@ -112,19 +129,21 @@ class RunStartupUseCasesInteractor(Protocol):
         return result
 
 
-class RunAnalysisUseCasesInteractor(Protocol):
+class RunAnalyticsUseCasesInteractor(Protocol):
     def __init__(
             self,
             build_sensor_event_timeline_use_case: BuildSensorEventTimelineInteractor,
             analyze_activity_use_case: AnalyzeActivityLevelsInteractor,
+            generate_insights_use_case: GenerateInsightsInteractor,
     ) -> None:
         self._build_sensor_timeline_uc = build_sensor_event_timeline_use_case
         self._analyze_activity_uc = analyze_activity_use_case
+        self._generate_insights_uc = generate_insights_use_case
 
     def execute(
             self,
-            request: RunAnalysisUseCasesRequestDTO,
-    ) -> RunAnalysisUseCasesResultDTO:
+            request: RunAnalyticsUseCasesRequestDTO,
+    ) -> RunAnalyticsUseCasesResultDTO:
         build_sensor_timeline_result: SensorEventTimelineResultDTO = (
             self._build_sensor_timeline(request))
 
@@ -134,15 +153,39 @@ class RunAnalysisUseCasesInteractor(Protocol):
                 build_sensor_timeline_result,
             ))
 
-        return RunAnalysisUseCasesResultDTO(
+        generate_insights_result: GenerateInsightsResultDTO = (
+            self._generate_insights(
+                request,
+                analyze_activity_result,
+            ))
+        return RunAnalyticsUseCasesResultDTO(
             run_request=request,
             build_sensor_timeline_result=build_sensor_timeline_result,
             analyze_activity_result=analyze_activity_result,
+            generate_insights_result=generate_insights_result,
         )
+
+    def _generate_insights(
+            self,
+            request: RunAnalyticsUseCasesRequestDTO,
+            analyze_activity_result: ActivityAnalysisResultDTO,
+    ) -> GenerateInsightsResultDTO:
+        logger.info("Generating insights use case...")
+        request = GenerateInsightsRequestDTO(
+            sensor_ids=request.sensor_ids,
+            sensor_profiles=request.sensor_profiles,
+            analyze_activity_result=analyze_activity_result,
+        )
+
+        result: GenerateInsightsResultDTO = (
+            self._generate_insights_uc.execute(request))
+
+        logger.info("... insights generated.")
+        return result
 
     def _build_sensor_timeline(
             self,
-            request: RunAnalysisUseCasesRequestDTO,
+            request: RunAnalyticsUseCasesRequestDTO,
     ) -> SensorEventTimelineResultDTO:
         logger.info("Building sensor timeline use case...")
 
@@ -161,7 +204,7 @@ class RunAnalysisUseCasesInteractor(Protocol):
 
     def _analyze_activity(
             self,
-            request: RunAnalysisUseCasesRequestDTO,
+            request: RunAnalyticsUseCasesRequestDTO,
             sensor_events_timeline: SensorEventTimelineResultDTO,
     ) -> ActivityAnalysisResultDTO:
         logger.info("Analyzing activity use case...")

@@ -1,7 +1,10 @@
 # /src/interface_adapters/presenters/activity/activity_presenter_service.py
 
+
 from src.application.dto.activity_metric_dtos import (
-    SensorTimePeriodStatisticsDTO, ActivityTrendDTO,
+    ActivityTrendDTO,
+    SensorTimePeriodStatisticsDTO,
+    SensorWeeklyActivityDTO,
 )
 
 from src.application.use_cases.analyze_activity_levels_use_case import (
@@ -65,14 +68,12 @@ class ActivityPresenterService:
 
     def present_weekly_activity(
             self,
-            result: ActivityAnalysisResultDTO | None,
+            weekly_sensor_activity: list[SensorWeeklyActivityDTO],
     ) -> WeeklyActivityViewModel:
-        if result is None:
+        if not weekly_sensor_activity:
             return self._weekly_presenter.present([])
 
-        return self._weekly_presenter.present(
-            result.weekly_sensor_activity
-        )
+        return self._weekly_presenter.present(weekly_sensor_activity)
 
     def present_time_period_activity_statistics(
             self,
@@ -88,3 +89,5 @@ class ActivityPresenterService:
         return self._trend_presenter.present(
             sensor_ids=sensor_ids,
             result=trend_results)
+
+

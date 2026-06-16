@@ -8,8 +8,8 @@ from src.domain.entities.sensor import SensorEvent
 
 # --- APPLICATION
 
-from src.application.dto.run_analysis_use_cases_dtos import (
-    RunAnalysisUseCasesResultDTO,
+from src.application.dto.run_analytics_use_cases_dtos import (
+    RunAnalyticsUseCasesResultDTO,
 )
 
 from src.application.dto.sensor_timeline_uc_dtos import (
@@ -85,7 +85,7 @@ from src.interface_adapters.views.console.console_view_service import (
 
 def handle_result_outputs_orchestrator(
         *,
-        response: RunAnalysisUseCasesResultDTO,
+        response: RunAnalyticsUseCasesResultDTO,
 
         activity_presenter_service: ActivityPresenterService,
 

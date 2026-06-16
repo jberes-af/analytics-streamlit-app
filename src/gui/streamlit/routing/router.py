@@ -18,7 +18,7 @@ from src.interface_adapters.controllers.startup_controller import (
 )
 
 from src.main.composition_root_startup import StartupAppContainer
-from src.main.composition_root_analysis import AnalysisAppContainer
+from src.main.composition_root_analytics import AnalysisAppContainer
 
 
 """

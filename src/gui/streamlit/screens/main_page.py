@@ -1,13 +1,15 @@
 # /src/gui/streamlit/screens/main_page.py
 
+from src.application.dto.activity_insights_dtos import ActivityInsightDTO
+
 from src.application.dto.run_startup_use_cases_dtos import (
     RunStartupUseCasesRequestDTO,
     RunStartupUseCasesResultDTO,
 )
 
-from src.application.dto.run_analysis_use_cases_dtos import (
-    RunAnalysisUseCasesRequestDTO,
-    RunAnalysisUseCasesResultDTO,
+from src.application.dto.run_analytics_use_cases_dtos import (
+    RunAnalyticsUseCasesRequestDTO,
+    RunAnalyticsUseCasesResultDTO,
 )
 
 from src.application.dto.sensor_by_user_uc_dtos import (
@@ -18,8 +20,8 @@ from src.gui.streamlit.components.filters.desktop_filter_panel import (
     render_desktop_filter_panel,
 )
 
-from src.gui.streamlit.output_handlers.activity.activity_charts_handler import (
-    handle_chart_outputs,
+from src.gui.streamlit.output_handlers.activity.weekly_activations_handler import (
+    handle_weekly_activation_outputs,
 )
 
 from src.gui.streamlit.output_handlers.activity.daily_activations_handler import (
@@ -39,12 +41,13 @@ from src.gui.streamlit.components.filters.models import (
 )
 
 from src.main.composition_root_startup import StartupAppContainer
-from src.main.composition_root_analysis import AnalysisAppContainer
+
+from src.main.composition_root_analytics import AnalysisAppContainer
 
 import streamlit as st
 
-
 from src.interface_adapters.output_handlers.results_handler import (handle_result_outputs_orchestrator)
+
 
 def render_main_page(
         startup_request: RunStartupUseCasesRequestDTO,
@@ -77,51 +80,65 @@ def render_main_page(
     )
 
     if filters.run_analysis or run_analysis_mobile:
-        analysis_request = RunAnalysisUseCasesRequestDTO(
+        analytics_request = RunAnalyticsUseCasesRequestDTO(
             sensor_ids=filters.selected_sensor_ids,
             start_date=filters.start_date,
             end_date=filters.end_date,
             rolling_window="7",
             rolling_frequency="7",
             local_timezone=filters.local_timezone,
+            sensor_profiles=lookup_results.sensor_profiles,
         )
 
-        analysis_result: RunAnalysisUseCasesResultDTO = (
-            analysis_app.run_controller.run(analysis_request)
+        analytics_result: RunAnalyticsUseCasesResultDTO = (
+            analysis_app.run_controller.run(analytics_request)
         )
 
-        st.session_state["analysis_result"] = analysis_result
+        st.session_state["analysis_result"] = analytics_result
         st.session_state["analysis_filters"] = filters
 
-    analysis_result = st.session_state.get("analysis_result")
+    analytics_result = st.session_state.get("analysis_result")
     analysis_filters = st.session_state.get("analysis_filters")
 
-    if analysis_result is None or analysis_filters is None:
+    if analytics_result is None or analysis_filters is None:
         st.info("Select filters and run analysis.")
         return
 
     # must call chart-outputs object from here in order to render on main-page
 
+    weekly_insights: list[ActivityInsightDTO] = (
+        analytics_result.generate_insights_result.insights.weekly_activity_insights)
+
+    handle_weekly_activation_outputs(
+        sensor_ids=filters.selected_sensor_ids,
+        weekly_sensor_activity=analytics_result.analyze_activity_result.weekly_sensor_activity,
+        charts_presenter_service=analysis_app.charts_presenter_service,
+        activity_presenter_service=analysis_app.activity_presenter_service,
+        insights_presenter_service=analysis_app.insights_presenter_service,
+        scatter_line_chart_weekly_plotter=analysis_app.scatter_line_chart_weekly_plotter,
+        weekly_activity_insights=weekly_insights,
+    )
+
     handle_daily_activation_outputs(
         sensor_ids=filters.selected_sensor_ids,
-        daily_activity_by_sensor_id=analysis_result.analyze_activity_result.sensor_by_id_by_date_activity,
-        daily_activity_all_sensors=analysis_result.analyze_activity_result.all_sensors_by_date_activity,
+        daily_activity_by_sensor_id=analytics_result.analyze_activity_result.sensor_by_id_by_date_activity,
+        daily_activity_all_sensors=analytics_result.analyze_activity_result.all_sensors_by_date_activity,
 
-        trend_all_sensors=analysis_result.analyze_activity_result.activity_trend_all_sensors,
-        trend_by_sensor_id=analysis_result.analyze_activity_result.activity_trend_by_sensor_id,
+        trend_all_sensors=analytics_result.analyze_activity_result.activity_trend_all_sensors,
+        trend_by_sensor_id=analytics_result.analyze_activity_result.activity_trend_by_sensor_id,
 
         activity_presenter_service=analysis_app.activity_presenter_service,
 
         charts_presenter_service=analysis_app.charts_presenter_service,
-        scatter_line_chart_plotter=analysis_app.scatter_line_chart_renderer,
+        scatter_line_chart_plotter=analysis_app.scatter_line_chart_daily_renderer,
 
         start_date=filters.start_date,
         end_date=filters.end_date,
-        statistics=analysis_result.analyze_activity_result.sensor_time_period_statistics,
+        statistics=analytics_result.analyze_activity_result.sensor_time_period_statistics,
     )
 
     handle_activation_timestamp_outputs(
-        sensor_events=analysis_result.build_sensor_timeline_result.collapsed_events,
+        sensor_events=analytics_result.build_sensor_timeline_result.collapsed_events,
         sensor_ids=filters.selected_sensor_ids,
         charts_presenter_service=analysis_app.charts_presenter_service,
         scatter_chart_plotter=analysis_app.scatter_chart_plotter,
@@ -132,12 +149,19 @@ def render_main_page(
 
     handle_hourly_activation_outputs(
         sensor_ids=filters.selected_sensor_ids,
-        hourly_activity_all_sensors=analysis_result.analyze_activity_result.all_sensors_by_hour_activity,
-        hourly_activity_by_sensor_id=analysis_result.analyze_activity_result.sensor_by_id_by_hour_activity,
+        hourly_activity_all_sensors=analytics_result.analyze_activity_result.all_sensors_by_hour_activity,
+        hourly_activity_by_sensor_id=analytics_result.analyze_activity_result.sensor_by_id_by_hour_activity,
         charts_presenter_service=analysis_app.charts_presenter_service,
         bar_horiz_chart_plotter=analysis_app.bar_horizontal_chart_plotter,
         start_date=filters.start_date,
         end_date=filters.end_date,
+    )
+
+    handle_result_outputs_orchestrator(
+        response=analytics_result,
+        activity_presenter_service=analysis_app.activity_presenter_service,
+        console_view_service=analysis_app.console_view_service,
+        dataframe_renderer=analysis_app.dataframe_renderer,
     )
 
 

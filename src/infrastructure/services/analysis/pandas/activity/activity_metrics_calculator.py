@@ -181,7 +181,10 @@ class PandasActivityMetricsCalculator(ActivityMetricsCalculatorPort):
             ),
 
             inactivity_periods=(
-                self.inactivity_calculator.calculate_by_timestamp(df)
+                self.inactivity_calculator.calculate_by_timestamp(
+                    df=df,
+                    end_date=end_time.date(),
+                )
             ),
 
             activity_distribution=(
