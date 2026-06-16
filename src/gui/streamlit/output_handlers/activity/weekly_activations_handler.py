@@ -112,22 +112,27 @@ def _render_sensor_weekly_activation_chart(
         except Exception as e:
             st.exception(e)
 
-        # st.subheader("Key Insights")
-        st.markdown(f"#### Summary")
-
+        st.markdown("#### Summary")
 
         section_header: str = weekly_insights_vm[0].section_header
+
         if section_header:
             st.markdown(f"##### {section_header}")
 
         for vm in weekly_insights_vm:
-            if vm.message_header:
-                st.markdown(f"**{vm.message_header}**")
 
-            if vm.message_line_1:
-                st.markdown(vm.message_line_1)
+            with st.container(border=False):
+                st.markdown(f"##### {vm.message_header}")
 
-            if vm.message_line_2:
-                st.markdown(vm.message_line_2)
+                col5, col6 = st.columns(2)
 
-            st.write("")
+                col5.metric(
+                    "Activations",
+                    f"{vm.current_value_label}",
+                )
+
+                col6.metric(
+                    "Vs Previous Week",
+                    f"{vm.change_percent_label}",
+                )
+                st.write("")

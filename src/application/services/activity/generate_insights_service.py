@@ -92,9 +92,9 @@ def _build_weekly_activity_insights(
             user_name = profile_by_id[sid].sensor_name
             location = profile_by_id[sid].sensor_location
             sensor_type = profile_by_id[sid].sensor_type
-            sensor_name = f"{user_name} ({location} {sensor_type})"
+            sensor_name = f"{user_name} ({location} • {sensor_type})"
 
-        message_line_1 = f"Activations were {activations}."
+        message_line_1 = f"- Activations: **{activations}**."
         message_line_2 = change_str
 
         results.append(
@@ -120,6 +120,6 @@ def _formulate_change_percent_direction_text(
     if change_percent is None:
         return f"percent change value not available."
     elif change_percent < 0:
-        return f"↓ {(100 * change_percent):.1f}% lower than the previous week."
+        return f"- **↓ {(100 * change_percent):.1f}% lower** than the previous week."
     else:
-        return f"↑ {(100 * change_percent):.1f}% higher than the previous week."
+        return f"- **↑ {(100 * change_percent):.1f}% higher** than the previous week."
